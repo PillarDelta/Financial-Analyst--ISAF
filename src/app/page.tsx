@@ -73,20 +73,22 @@ export default function Home() {
   const renderMessage = (message: Message) => {
     if (message.type === 'assistant') {
       return (
-        <div className="space-y-6">
+        <div className="space-y-12">
           {message.content.split('\n\n').map((paragraph, i) => {
-            // Handle main section headers (Key Insights:, Risk Analysis:, etc)
+            // Section headers (Key Insights:, Risk Analysis:, etc)
             if (paragraph.match(/^[A-Z][a-zA-Z\s]+:/)) {
               return (
-                <h2 key={i} className="text-[var(--text-primary)] text-xl font-bold mb-4">
-                  {paragraph}
-                </h2>
+                <div key={i} className="space-y-6">
+                  <h2 className="text-[var(--text-primary)] text-xl font-light">
+                    {paragraph}
+                  </h2>
+                </div>
               )
             }
 
-            // All other text (including numbered points)
+            // Numbered points and regular text - same styling
             return (
-              <p key={i} className="text-[var(--text-secondary)] text-base">
+              <p key={i} className="text-[var(--text-secondary)] text-base font-light leading-8">
                 {paragraph}
               </p>
             )
@@ -95,6 +97,7 @@ export default function Home() {
       )
     }
 
+    // Document Preview text
     if (message.content === 'DOCUMENT_PREVIEW' && message.documents?.[0]) {
       return (
         <DocumentPreview 
@@ -102,21 +105,17 @@ export default function Home() {
           fileType={message.documents[0].type}
           isProcessing={isProcessingFile && message.id === messages[messages.length - 1]?.id}
           imageUrl={message.documents[0].imageUrl}
+          content={message.documents[0].content}
         />
       )
     }
 
-    // Regular message with progress indicator while loading
-    if (isLoading && message.id === messages[messages.length - 1]?.id) {
-      return (
-        <div className="space-y-4">
-          <div className="text-[var(--text-secondary)]">{message.content}</div>
-          <SmoothProgress />
-        </div>
-      )
-    }
-
-    return message.content
+    // All other text (loading states, regular messages)
+    return (
+      <div className="text-[var(--text-secondary)] text-base font-light">
+        {message.content}
+      </div>
+    )
   }
 
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
@@ -142,18 +141,20 @@ export default function Home() {
                 <div 
                   key={message.id}
                   ref={index === messages.length - 1 ? lastMessageRef : null}
-                  className={`${
-                    message.type === 'user'
-                      ? 'flex justify-end'
-                      : 'flex justify-start'
-                  }`}
+                  className={`
+                    ${message.type === 'user' ? 'flex justify-end' : 'flex justify-start'}
+                    animate-fadeIn opacity-0
+                    [animation:fadeInUp_0.5s_ease-out_forwards]
+                    [animation-delay:${index * 0.1}s]
+                  `}
                 >
-                  <div className={`${
-                    message.type === 'user'
+                  <div className={`
+                    ${message.type === 'user'
                       ? 'w-[600px] border border-[rgba(255,255,255,0.1)] rounded p-4'
                       : 'w-[800px]'
-                  }`}>
-                    <div className="text-[var(--text-secondary)] text-base leading-7"> {/* Better text formatting */}
+                    }
+                  `}>
+                    <div className="text-[var(--text-secondary)] text-base leading-7">
                       {renderMessage(message)}
                     </div>
                   </div>

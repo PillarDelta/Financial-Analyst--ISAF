@@ -1,0 +1,8 @@
+app/
+├── v1/                 # Move existing app files here
+│   └── ...            # Current app files
+└── v2/                # New version
+    ├── components/    
+    ├── lib/
+    ├── styles/
+    └── page.tsx       # New V2 entry point 

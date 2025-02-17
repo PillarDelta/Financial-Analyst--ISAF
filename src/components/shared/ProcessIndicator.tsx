@@ -30,7 +30,7 @@ export function ProcessIndicator({ fileName }: ProcessIndicatorProps) {
           <div className="w-2 h-2 rounded-full bg-[var(--blue-accent)] animate-[bounce_1s_infinite_200ms]"></div>
           <div className="w-2 h-2 rounded-full bg-[var(--blue-accent)] animate-[bounce_1s_infinite_400ms]"></div>
         </div>
-        <span className="text-sm text-[var(--text-primary)] transition-opacity duration-500">
+        <span className="text-sm text-[var(--text-primary)] font-light transition-opacity duration-500">
           {steps[step]}
         </span>
       </div>

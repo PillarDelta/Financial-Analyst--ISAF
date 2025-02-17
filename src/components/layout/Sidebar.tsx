@@ -1,6 +1,7 @@
 'use client'
 
 import { useSidebar } from './SidebarContext'
+import Link from 'next/link'
 
 export default function Sidebar() {
   const { isOpen, toggleSidebar } = useSidebar()
@@ -52,9 +53,12 @@ export default function Sidebar() {
           <button className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-secondary)] text-xs font-medium tracking-wider">
             CLEAR DOCUMENTS
           </button>
-          <button className="w-full py-2 rounded bg-transparent text-[var(--blue-accent)] border border-[var(--blue-accent)] text-xs font-medium tracking-wider">
+          <Link 
+            href="/dashboard"
+            className="w-full py-2 rounded bg-transparent text-[var(--blue-accent)] border border-[var(--blue-accent)] text-xs font-medium tracking-wider text-center hover:bg-[var(--blue-accent)] hover:text-white transition-colors"
+          >
             DASHBOARD
-          </button>
+          </Link>
         </div>
       </aside>
     </>
