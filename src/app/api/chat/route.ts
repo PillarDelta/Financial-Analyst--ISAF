@@ -30,6 +30,13 @@ export async function POST(req: Request) {
 
     // Handle both image and text analysis with gpt-4o
     if (documents?.[0]?.imageUrl) {
+      // Add processing status for images
+      const processingMessage: ChatCompletionMessageParam = {
+        role: 'assistant',
+        content: 'Processing image...'
+      }
+      messages.push(processingMessage)
+
       messages.push({
         role: 'user',
         content: [

@@ -234,6 +234,16 @@ export default function Home() {
           </form>
         </div>
       </div>
+
+      {/* Processing Indicator */}
+      {isLoading && (
+        <div className="flex items-center gap-3 bg-[rgba(255,255,255,0.05)] px-4 py-2 m-4 rounded">
+          <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+          <span className="text-[var(--text-secondary)] text-sm">
+            Processing query...
+          </span>
+        </div>
+      )}
     </div>
   )
 } 
