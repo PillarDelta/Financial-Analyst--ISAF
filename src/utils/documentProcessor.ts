@@ -18,12 +18,13 @@ export async function processDocument(file: File): Promise<{
     const fileType = getFileType(file)
     
     switch (fileType) {
+      case 'xlsx':
+      case 'csv':
+        return processExcel(file)
       case 'docx':
         return processDocx(file)
       case 'txt':
         return processText(file)
-      case 'csv':
-        return processCsv(file)
       case 'pdf':
         return processPdf(file)
       case 'image':
@@ -38,8 +39,20 @@ export async function processDocument(file: File): Promise<{
 }
 
 function getFileType(file: File): SupportedFileType {
+  const mimeType = file.type
   const extension = file.name.split('.').pop()?.toLowerCase()
-  
+
+  if (mimeType.includes('spreadsheet') || 
+      mimeType.includes('excel') || 
+      extension === 'xlsx' || 
+      extension === 'xls') {
+    return 'xlsx'
+  }
+
+  if (mimeType.includes('csv') || extension === 'csv') {
+    return 'csv'
+  }
+
   switch (extension) {
     case 'docx':
       return 'docx'
@@ -47,16 +60,24 @@ function getFileType(file: File): SupportedFileType {
       return 'pdf'
     case 'txt':
       return 'txt'
-    case 'csv':
-      return 'csv'
-    case 'xlsx':
-      return 'xlsx'
     case 'jpg':
     case 'jpeg':
     case 'png':
       return 'image'
     default:
-      throw new Error(`Unsupported file extension: ${extension}`)
+      throw new Error(`Unsupported file type: ${file.type}`)
+  }
+}
+
+async function processExcel(file: File) {
+  const arrayBuffer = await file.arrayBuffer()
+  const workbook = XLSX.read(arrayBuffer)
+  const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
+  const csvContent = XLSX.utils.sheet_to_csv(firstSheet)
+  
+  return {
+    content: csvContent,
+    type: 'xlsx' as SupportedFileType
   }
 }
 
@@ -77,37 +98,52 @@ async function processText(file: File) {
   }
 }
 
-async function processCsv(file: File) {
-  const text = await file.text()
-  return {
-    content: text,
-    type: 'csv' as SupportedFileType
-  }
-}
-
 async function processPdf(file: File) {
-  // For now, just return placeholder
-  return {
-    content: 'PDF processing to be implemented',
-    type: 'pdf' as SupportedFileType
+  try {
+    const arrayBuffer = await file.arrayBuffer()
+    const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
+    const numPages = pdf.numPages
+    let fullText = ''
+
+    // Extract text from all pages
+    for (let i = 1; i <= numPages; i++) {
+      const page = await pdf.getPage(i)
+      const content = await page.getTextContent()
+      const text = content.items.map((item: any) => item.str).join(' ')
+      fullText += text + '\n'
+    }
+
+    return {
+      content: fullText,
+      type: 'pdf' as SupportedFileType
+    }
+  } catch (error) {
+    console.error('PDF processing error:', error)
+    throw error
   }
 }
 
 async function processImage(file: File) {
-  // For now, just return placeholder
-  return {
-    content: 'Image processing to be implemented',
-    type: 'image' as SupportedFileType
-  }
-}
-
-async function processSpreadsheet(buffer: ArrayBuffer, fileType: string): Promise<string> {
-  if (fileType === 'text/csv') {
-    const text = new TextDecoder().decode(buffer)
-    return text
-  } else {
-    const workbook = XLSX.read(buffer)
-    const firstSheet = workbook.Sheets[workbook.SheetNames[0]]
-    return XLSX.utils.sheet_to_csv(firstSheet)
+  try {
+    // Convert image to base64
+    const base64Image = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => {
+        if (typeof reader.result === 'string') {
+          resolve(reader.result)
+        }
+      }
+      reader.onerror = reject
+      reader.readAsDataURL(file)
+    })
+    
+    return {
+      content: '',  // Empty content since we'll use the URL
+      imageUrl: base64Image,  // Use base64 data URL instead of blob URL
+      type: 'image' as SupportedFileType
+    }
+  } catch (error) {
+    console.error('Image processing error:', error)
+    throw error
   }
 } 

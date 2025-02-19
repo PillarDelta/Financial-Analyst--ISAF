@@ -35,8 +35,9 @@ export function DocumentPreview({ fileName, fileType, isProcessing, imageUrl, co
             {content.substring(0, 200)}...
           </div>
         </div>
-      );
+      )
     }
+
     if (isExpanded && (
       fileType.includes('sheet') || fileType.includes('csv') ||
       fileType.includes('pdf') ||
