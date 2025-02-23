@@ -1,12 +1,13 @@
 'use client'
 
 import { Upload } from 'lucide-react'
-import { useChat, type AnalysisType } from '@/hooks/useChat'
+import { useChat, type AnalysisType, type Message } from '@/hooks/useChat'
 import { useRef, useEffect } from 'react'
 import { LoadingIndicator } from '@/components/shared/LoadingIndicator'
 import { DocumentPreview } from '@/components/shared/DocumentPreview'
 import { ProcessIndicator } from '@/components/shared/ProcessIndicator'
 import { SmoothProgress } from '@/components/shared/SmoothProgress'
+import { ProcessingIndicator } from '@/components/shared/ProcessingIndicator'
 
 export default function Home() {
   const {
@@ -50,7 +51,7 @@ export default function Home() {
     }, 100)
   
     return () => clearTimeout(timer)
-  }, [messages.length, isLoading]) // Watch for both new messages and loading state
+  }, [messages.length, isProcessingFile]) // Watch for both new messages and processing state
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -74,21 +75,45 @@ export default function Home() {
     if (message.type === 'assistant') {
       return (
         <div className="space-y-12">
-          {message.content.split('\n\n').map((paragraph, i) => {
-            // Section headers (Key Insights:, Risk Analysis:, etc)
-            if (paragraph.match(/^[A-Z][a-zA-Z\s]+:/)) {
+          {message.content.split('\n\n').map((paragraph: string, i: number) => {
+            // Main headers (CONTEXT SUMMARY, DIFS ANALYSIS)
+            if (paragraph.match(/^[A-Z][A-Z\s]+$/)) {
               return (
                 <div key={i} className="space-y-6">
-                  <h2 className="text-[var(--text-primary)] text-xl font-light">
+                  <h2 className="text-[#0057FF] text-xl font-light">
                     {paragraph}
                   </h2>
                 </div>
               )
             }
 
-            // Numbered points and regular text - same styling
+            // Numbered sections (1. Data Extraction, etc.)
+            if (paragraph.match(/^\d+\./)) {
+              const [title, ...content] = paragraph.split('-')
+              return (
+                <div key={i} className="space-y-2">
+                  <h3 className="text-[#0057FF] text-lg font-light">
+                    {title.trim()}
+                  </h3>
+                  <p className="text-[#ffffff] text-base font-light leading-8">
+                    {content.join('-')}
+                  </p>
+                </div>
+              )
+            }
+
+            // Disclaimers
+            if (paragraph.toLowerCase().includes('disclaimer')) {
+              return (
+                <p key={i} className="text-[rgba(255,255,255,0.45)] text-base font-light leading-8 italic">
+                  {paragraph}
+                </p>
+              )
+            }
+
+            // Regular paragraphs in white
             return (
-              <p key={i} className="text-[var(--text-secondary)] text-base font-light leading-8">
+              <p key={i} className="text-[#ffffff] text-base font-light leading-8">
                 {paragraph}
               </p>
             )
@@ -110,9 +135,9 @@ export default function Home() {
       )
     }
 
-    // All other text (loading states, regular messages)
+    // User messages in white
     return (
-      <div className="text-[var(--text-secondary)] text-base font-light">
+      <div className="text-[#ffffff] text-base font-light">
         {message.content}
       </div>
     )
@@ -121,7 +146,7 @@ export default function Home() {
   const handleKeyPress = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (e.key === 'Enter' && !e.shiftKey) {  // Enter without Shift
       e.preventDefault()  // Prevent new line
-      if (currentInput.trim() && !isLoading && !isProcessingFile) {
+      if (currentInput.trim() && !isProcessingFile) {
         handleSubmit(e)
       }
     }
@@ -134,7 +159,7 @@ export default function Home() {
         <div className="flex-1 relative">
           <div 
             ref={scrollContainerRef}
-            className="absolute inset-0 overflow-y-auto scrollbar-thin scrollbar-thumb-[rgba(255,255,255,0.1)]"
+            className="absolute inset-0 overflow-y-auto scrollbar-none"
           >
             <div className="flex flex-col py-4 space-y-8 pb-[600px]">
               {messages.map((message, index) => (
@@ -224,26 +249,27 @@ export default function Home() {
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading || isProcessingFile || !currentInput.trim()}
+                  disabled={isProcessingFile || !currentInput.trim()}
                   className="border border-[var(--blue-accent)] bg-transparent text-[var(--blue-accent)] px-6 py-2 rounded text-sm font-light tracking-wider disabled:opacity-50 transition-opacity hover:bg-[var(--blue-accent)] hover:text-white"
                 >
-                  {isProcessingFile ? 'PROCESSING...' : isLoading ? 'SENDING...' : 'SEND IT'}
+                  {isProcessingFile ? 'PROCESSING...' : 'SEND IT'}
                 </button>
               </div>
             </div>
           </form>
         </div>
-      </div>
 
-      {/* Processing Indicator */}
-      {isLoading && (
-        <div className="flex items-center gap-3 bg-[rgba(255,255,255,0.05)] px-4 py-2 m-4 rounded">
-          <div className="w-4 h-4 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
-          <span className="text-[var(--text-secondary)] text-sm">
-            Processing query...
-          </span>
-        </div>
-      )}
+        {/* Processing Indicator */}
+        {(isLoading || isProcessingFile) && (
+          <div className="fixed bottom-4 left-1/2 -translate-x-1/2">
+            <ProcessIndicator 
+              isLoading={isLoading} 
+              isProcessingFile={isProcessingFile} 
+              fileName={messages[messages.length - 1]?.documents?.[0]?.name}
+            />
+          </div>
+        )}
+      </div>
     </div>
   )
 } 

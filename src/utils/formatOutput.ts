@@ -1,5 +1,3 @@
-import katex from 'katex'
-
 export function formatOutput(content: string): string {
   if (content.includes("does not comply") || 
       content.includes("Failed to process")) {
@@ -16,82 +14,32 @@ export function formatOutput(content: string): string {
     .replace(/^(\d+)\.\s+/gm, '$1. ')
     .trim()
 
-  // Process content with modern formatting
+  // Process content without adding HTML tags
   const processedContent = cleanContent
-    // Format numbers and currency
-    .replace(/€\s*\d+(?:[.,]\d+)*/g, match => 
-      `<span class="font-mono text-blue-400">${match}</span>`
+    // Format numbers in blue
+    .replace(/\b\d+([.,]\d+)?(?![A-Za-z])/g, match => 
+      `${match}`
     )
-    // Format dates with numbers
-    .replace(/\d{3,4}['>]\s*\d{4}/g, match => 
-      `<span class="font-mono text-blue-400">${match.replace(/['>]/, '')}</span>`
-    )
-    // Format standalone numbers
-    .replace(/(?<![a-zA-Z])\d+(?:[.,]\d+)*(?![a-zA-Z])/g, match => 
-      `<span class="font-mono text-blue-400">${match}</span>`
-    )
+    // Format months and years
+    .replace(/\b(January|February|March|April|May|June|July|August|September|October|November|December)\s+\d{4}\b/g, match => {
+      const [month, year] = match.split(' ');
+      return `${month} ${year}`;
+    })
 
-  const sections = processedContent.split('\n\n')
-  const formattedSections = sections.map(section => {
-    // Main Headers
-    if (section.match(/^[A-Z][A-Z\s]{3,}$/m)) {
-      return `
-        <div class="mb-6 mt-8 first:mt-4">
-          <h1 class="text-xl font-light tracking-wide text-white opacity-90">
-            ${section}
-          </h1>
-          <div class="h-px bg-gradient-to-r from-blue-400/20 to-transparent mt-2"></div>
-        </div>`
+  // Split into sections and format
+  const sections = processedContent.split('\n\n').map(section => {
+    // Keep text formatting simple
+    if (section.startsWith('CONTEXT SUMMARY') || section.startsWith('DIFS ANALYSIS')) {
+      return section;
     }
 
-    // Subheaders
-    if (section.match(/^(\d+\.\s)?[A-Z][a-zA-Z\s]+:/) || 
-        section.includes('Analysis:') || 
-        section.includes('Summary:')) {
-      return `
-        <div class="mb-4 mt-6">
-          <h2 class="text-lg font-light text-white/90">
-            ${section.replace(':', '')}
-          </h2>
-        </div>`
+    if (/^\d+\.\s+[A-Z]/.test(section)) {
+      return section;
     }
 
-    // Bullet Points
-    if (section.includes('• ')) {
-      const bullets = section.split('\n')
-      return `
-        <ul class="mb-4 space-y-2">
-          ${bullets.map(bullet => 
-            `<li class="flex items-start gap-2 text-white/80">
-              <span class="text-blue-400/90 mt-1">•</span>
-              <span>${bullet.replace('• ', '')}</span>
-            </li>`
-          ).join('')}
-        </ul>`
-    }
+    return section;
+  });
 
-    // Key-Value Pairs
-    if (section.match(/^[A-Za-z\s]+:\s/)) {
-      return `
-        <div class="mb-3 flex items-baseline gap-3">
-          <span class="text-blue-400/90 font-medium min-w-[120px]">
-            ${section.split(':')[0]}:
-          </span>
-          <span class="text-white/80">
-            ${section.split(':')[1]}
-          </span>
-        </div>`
-    }
-
-    // Regular Paragraphs
-    return `
-      <p class="text-white/80 mb-4">
-        ${section}
-      </p>`
-  })
-
-  return `
-    <div class="space-y-1 max-w-[800px]">
-      ${formattedSections.join('\n')}
-    </div>`
+  // Return clean text without HTML
+  return sections.join('\n\n');
 } 
