@@ -5,8 +5,6 @@ import { useChat, type AnalysisType } from '@/hooks/useChat'
 import { useRef, useEffect } from 'react'
 import { DocumentPreview } from '@/components/shared/DocumentPreview'
 import { ProcessIndicator } from '@/components/shared/ProcessIndicator'
-import { SmoothProgress } from '@/components/shared/SmoothProgress'
-import { ProcessingIndicator } from '@/components/shared/ProcessingIndicator'
 
 // Update Message type in useChat.ts instead of extending it here
 interface DocumentInfo {
