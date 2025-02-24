@@ -1,13 +1,29 @@
 'use client'
 
 import { Upload } from 'lucide-react'
-import { useChat, type AnalysisType, type Message } from '@/hooks/useChat'
+import { useChat, type AnalysisType } from '@/hooks/useChat'
 import { useRef, useEffect } from 'react'
-import { LoadingIndicator } from '@/components/shared/LoadingIndicator'
 import { DocumentPreview } from '@/components/shared/DocumentPreview'
 import { ProcessIndicator } from '@/components/shared/ProcessIndicator'
 import { SmoothProgress } from '@/components/shared/SmoothProgress'
 import { ProcessingIndicator } from '@/components/shared/ProcessingIndicator'
+
+// Update Message type in useChat.ts instead of extending it here
+interface DocumentInfo {
+  name: string
+  type: string
+  imageUrl?: string
+  content?: string
+}
+
+// Update the Message type in useChat.ts
+type ExtendedMessage = {
+  id: string
+  content: string
+  type: 'user' | 'assistant'
+  timestamp: Date
+  documents?: DocumentInfo[]
+}
 
 export default function Home() {
   const {
@@ -71,7 +87,7 @@ export default function Home() {
     { id: 'company-health', label: 'Company Health' },
   ]
 
-  const renderMessage = (message: Message) => {
+  const renderMessage = (message: ExtendedMessage) => {
     if (message.type === 'assistant') {
       return (
         <div className="space-y-12">
@@ -80,40 +96,16 @@ export default function Home() {
             if (paragraph.match(/^[A-Z][A-Z\s]+$/)) {
               return (
                 <div key={i} className="space-y-6">
-                  <h2 className="text-[#0057FF] text-xl font-light">
+                  <h2 className="text-[var(--blue-accent)] text-xl font-light">
                     {paragraph}
                   </h2>
                 </div>
               )
             }
 
-            // Numbered sections (1. Data Extraction, etc.)
-            if (paragraph.match(/^\d+\./)) {
-              const [title, ...content] = paragraph.split('-')
-              return (
-                <div key={i} className="space-y-2">
-                  <h3 className="text-[#0057FF] text-lg font-light">
-                    {title.trim()}
-                  </h3>
-                  <p className="text-[#ffffff] text-base font-light leading-8">
-                    {content.join('-')}
-                  </p>
-                </div>
-              )
-            }
-
-            // Disclaimers
-            if (paragraph.toLowerCase().includes('disclaimer')) {
-              return (
-                <p key={i} className="text-[rgba(255,255,255,0.45)] text-base font-light leading-8 italic">
-                  {paragraph}
-                </p>
-              )
-            }
-
-            // Regular paragraphs in white
+            // Regular paragraphs
             return (
-              <p key={i} className="text-[#ffffff] text-base font-light leading-8">
+              <p key={i} className="text-[var(--text-primary)] text-base font-light leading-8">
                 {paragraph}
               </p>
             )
@@ -135,9 +127,9 @@ export default function Home() {
       )
     }
 
-    // User messages in white
+    // User messages
     return (
-      <div className="text-[#ffffff] text-base font-light">
+      <div className="text-[var(--text-primary)] text-base font-light">
         {message.content}
       </div>
     )
@@ -180,7 +172,7 @@ export default function Home() {
                     }
                   `}>
                     <div className="text-[var(--text-secondary)] text-base leading-7">
-                      {renderMessage(message)}
+                      {renderMessage(message as ExtendedMessage)}
                     </div>
                   </div>
                 </div>
@@ -208,7 +200,7 @@ export default function Home() {
               onKeyDown={handleKeyPress}
               placeholder={isProcessingFile ? "Processing document..." : "Ask something..."}
               disabled={isProcessingFile}
-              className="w-full min-h-[100px] bg-transparent border border-[rgba(255,255,255,0.1)] rounded px-4 py-2 text-[var(--text-primary)] text-base font-light resize-none outline-none mb-4"
+              className="w-full min-h-[100px] bg-[var(--input-bg)] border border-[var(--border-color)] rounded px-4 py-2 text-[var(--text-primary)] placeholder:text-[var(--text-secondary)] text-base font-light resize-none outline-none mb-4"
             />
             
             <div className="flex justify-between items-center">
@@ -245,7 +237,7 @@ export default function Home() {
                   disabled={isProcessingFile}
                   className="p-2 rounded border border-[rgba(255,255,255,0.1)] text-[var(--text-secondary)] hover:border-[rgba(255,255,255,0.2)]"
                 >
-                  <Upload className="w-5 h-5" />
+                  <Upload className="w-5 h-5 text-[var(--text-primary)]" />
                 </button>
                 <button
                   type="submit"
@@ -265,7 +257,7 @@ export default function Home() {
             <ProcessIndicator 
               isLoading={isLoading} 
               isProcessingFile={isProcessingFile} 
-              fileName={messages[messages.length - 1]?.documents?.[0]?.name}
+              fileName={(messages[messages.length - 1] as ExtendedMessage)?.documents?.[0]?.name}
             />
           </div>
         )}

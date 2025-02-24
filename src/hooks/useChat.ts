@@ -9,7 +9,12 @@ export type Message = {
   content: string
   type: 'user' | 'assistant'
   timestamp: Date
-  documents?: string[]
+  documents?: {
+    name: string
+    type: string
+    imageUrl?: string
+    content?: string
+  }[]
 }
 
 export function useChat() {
@@ -23,7 +28,10 @@ export function useChat() {
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
   const sendMessage = async (content: string) => {
-    if (!content.trim()) return
+    if (!content.trim() || isProcessingFile) return
+
+    // Set processing state for message
+    setIsLoading(true)
 
     const userMessage: Message = {
       id: Date.now().toString(),
@@ -34,10 +42,14 @@ export function useChat() {
     }
     setMessages(prev => [...prev, userMessage])
     setCurrentInput('')
-    setIsLoading(true)
-    setDocuments([]) // Clear documents after sending
+    setDocuments([])
 
     try {
+      // Simulate progress
+      const progressInterval = setInterval(() => {
+        setIsLoading(prev => Math.min((prev ? 100 : 0) + 10, 90) > 0)
+      }, 500)
+
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -47,6 +59,8 @@ export function useChat() {
           documents: userMessage.documents
         })
       })
+
+      clearInterval(progressInterval)
 
       if (!response.ok) throw new Error('Failed to get response')
       
@@ -61,7 +75,6 @@ export function useChat() {
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       console.error('Failed to send message:', error)
-      // Add error message to chat
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         content: 'Sorry, I encountered an error processing your request.',

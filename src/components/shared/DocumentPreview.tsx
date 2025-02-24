@@ -16,15 +16,15 @@ export function DocumentPreview({ fileName, fileType, isProcessing, imageUrl, co
   const [isExpanded, setIsExpanded] = useState(false)
 
   const getIcon = () => {
-    if (fileType.includes('pdf')) return <FileText className="w-8 h-8 text-[rgba(255,255,255,0.6)]" />
+    if (fileType.includes('pdf')) return <FileText className="w-8 h-8 text-[var(--text-secondary)]" />
     if (fileType.includes('sheet') || fileType.includes('csv') || fileType.includes('excel')) {
-      return <FileSpreadsheet className="w-8 h-8 text-[rgba(255,255,255,0.6)]" />
+      return <FileSpreadsheet className="w-8 h-8 text-[var(--text-secondary)]" />
     }
-    if (fileType.includes('image')) return <Image className="w-8 h-8 text-[rgba(255,255,255,0.6)]" />
+    if (fileType.includes('image')) return <Image className="w-8 h-8 text-[var(--text-secondary)]" />
     if (fileType.includes('docx')) {
-      return <File className="w-8 h-8 text-[#2B579A]" />
+      return <File className="w-8 h-8 text-[var(--text-secondary)]" />
     }
-    return <FileText className="w-8 h-8 text-[rgba(255,255,255,0.6)]" />
+    return <FileText className="w-8 h-8 text-[var(--text-secondary)]" />
   }
 
   const renderPreview = () => {
@@ -91,7 +91,7 @@ export function DocumentPreview({ fileName, fileType, isProcessing, imageUrl, co
   }
 
   return (
-    <div className="border border-[rgba(255,255,255,0.1)] rounded p-4 bg-transparent">
+    <div className="border border-[var(--box-stroke)] rounded p-4 bg-[var(--input-bg)]">
       <div className="flex items-center gap-4 cursor-pointer" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="text-2xl">{getIcon()}</div>
         <div className="flex-1">

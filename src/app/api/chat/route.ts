@@ -21,22 +21,12 @@ export async function POST(req: Request) {
       systemPrompt += '\n\n' + analysisPrompt
     }
 
-    // Remove the formatting instructions that add headers
-    systemPrompt = systemPrompt.replace(/Format your response using this professional structure[\s\S]*?two line breaks between main sections`/, '')
-
     const messages: ChatCompletionMessageParam[] = [
       { role: 'system', content: systemPrompt }
     ]
 
     // Handle both image and text analysis with gpt-4o
     if (documents?.[0]?.imageUrl) {
-      // Add processing status for images
-      const processingMessage: ChatCompletionMessageParam = {
-        role: 'assistant',
-        content: 'Processing image...'
-      }
-      messages.push(processingMessage)
-
       messages.push({
         role: 'user',
         content: [
@@ -67,7 +57,7 @@ export async function POST(req: Request) {
       max_tokens: 2000
     })
 
-    const cleanContent = formatOutput(response.choices[0].message.content ?? '', 'analysis')
+    const cleanContent = formatOutput(response.choices[0].message.content ?? '')
     return NextResponse.json({ content: cleanContent })
   } catch (error) {
     console.error('OpenAI API error:', error)

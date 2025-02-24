@@ -2,9 +2,12 @@
 
 import { useSidebar } from './SidebarContext'
 import Link from 'next/link'
+import { useTheme } from '@/contexts/ThemeContext'
+import { Sun, Moon } from 'lucide-react'
 
 export default function Sidebar() {
   const { isOpen, toggleSidebar } = useSidebar()
+  const { theme, toggleTheme } = useTheme()
 
   return (
     <>
@@ -44,7 +47,7 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-auto flex flex-col gap-2">
-          <button className="w-full py-2 rounded bg-[#1a1a1a] text-[var(--text-primary)] border border-[var(--border-color)] text-xs font-medium tracking-wider">
+          <button className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-primary)] border border-[var(--border-color)] text-xs font-medium tracking-wider">
             NEW CHAT
           </button>
           <button className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-secondary)] text-xs font-medium tracking-wider">
@@ -59,6 +62,16 @@ export default function Sidebar() {
           >
             DASHBOARD
           </Link>
+          <button
+            onClick={toggleTheme}
+            className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-secondary)] text-xs font-medium tracking-wider flex items-center justify-center gap-2"
+          >
+            {theme === 'dark' ? 
+              <Sun className="w-4 h-4 text-[var(--text-primary)]" /> : 
+              <Moon className="w-4 h-4 text-[var(--text-primary)]" />
+            }
+            {theme === 'dark' ? 'LIGHT MODE' : 'DARK MODE'}
+          </button>
         </div>
       </aside>
     </>
