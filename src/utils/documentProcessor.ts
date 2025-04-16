@@ -139,7 +139,7 @@ async function processImage(file: File) {
     
     return {
       content: '',  // Empty content since we'll use the URL
-      imageUrl: base64Image,  // Use base64 data URL instead of blob URL
+      imageUrl: base64Image,  // This should be a valid base64 string
       type: 'image' as SupportedFileType
     }
   } catch (error) {

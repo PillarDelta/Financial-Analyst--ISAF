@@ -83,6 +83,7 @@ export default function Home() {
     { id: 'risk-analysis', label: 'Risk Analysis' },
     { id: 'z-score', label: 'Z-Score' },
     { id: 'company-health', label: 'Company Health' },
+    { id: 'isaf', label: 'ISAF Strategic Analysis' },
   ]
 
   const renderMessage = (message: ExtendedMessage) => {

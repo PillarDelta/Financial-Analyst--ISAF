@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { processDocument } from '@/utils/documentProcessor'
 
-export type AnalysisType = 'risk-analysis' | 'z-score' | 'company-health'
+export type AnalysisType = 'risk-analysis' | 'z-score' | 'company-health' | 'isaf'
 export type Message = {
   id: string
   content: string
@@ -23,7 +23,7 @@ export function useChat() {
   const [isLoading, setIsLoading] = useState(false)
   const [isProcessingFile, setIsProcessingFile] = useState(false)
   const [currentInput, setCurrentInput] = useState('')
-  const [documents, setDocuments] = useState<string[]>([])
+  const [documents, setDocuments] = useState<Message['documents']>([])
 
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
@@ -38,7 +38,7 @@ export function useChat() {
       content,
       type: 'user',
       timestamp: new Date(),
-      documents: documents.length ? [...documents] : undefined
+      documents: documents && documents.length > 0 ? [...documents] : undefined
     }
     setMessages(prev => [...prev, userMessage])
     setCurrentInput('')
@@ -89,15 +89,26 @@ export function useChat() {
 
   const analyzeDocument = async (content: string, imageUrl?: string) => {
     try {
-      console.log('Analyzing document:', { content, imageUrl })
+      console.log('Analyzing document:', { content, imageUrl, analysisType })
+      
+      // Prepare prompt based on analysisType
+      let promptText = '';
+      
+      if (analysisType === 'isaf') {
+        promptText = imageUrl 
+          ? 'Please perform an ISAF strategic analysis on this image. Identify all visible business factors and metrics for strategic analysis.'
+          : `Please perform an ISAF strategic analysis on this document. Extract all business factors for strategic analysis: ${content}`
+      } else {
+        promptText = imageUrl 
+          ? 'Please analyze this image and describe what you see.'
+          : `Please analyze this document and provide key insights: ${content}`
+      }
       
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          content: imageUrl 
-            ? 'Please analyze this image and describe what you see.'
-            : `Please analyze this document and provide key insights: ${content}`,
+          content: promptText,
           analysisType,
           documents: [{
             content,
