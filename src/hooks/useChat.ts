@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { processDocument } from '@/utils/documentProcessor'
+import { processDocument, SupportedFileType } from '@/utils/documentProcessor'
 
 export type AnalysisType = 'risk-analysis' | 'z-score' | 'company-health' | 'isaf'
 export type Message = {
@@ -10,11 +10,18 @@ export type Message = {
   type: 'user' | 'assistant'
   timestamp: Date
   documents?: {
-    name: string
-    type: string
+    name?: string
+    type?: string
     imageUrl?: string
     content?: string
   }[]
+}
+
+type DocumentType = {
+  content?: string
+  imageUrl?: string
+  name?: string
+  type?: string
 }
 
 export function useChat() {
@@ -23,7 +30,7 @@ export function useChat() {
   const [isLoading, setIsLoading] = useState(false)
   const [isProcessingFile, setIsProcessingFile] = useState(false)
   const [currentInput, setCurrentInput] = useState('')
-  const [documents, setDocuments] = useState<Message['documents']>([])
+  const [documents, setDocuments] = useState<DocumentType[]>([])
 
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
@@ -62,7 +69,11 @@ export function useChat() {
 
       clearInterval(progressInterval)
 
-      if (!response.ok) throw new Error('Failed to get response')
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('API error:', response.status, errorData);
+        throw new Error(`Request failed with status ${response.status}. ${errorData || 'Failed to get response'}`);
+      }
       
       const data = await response.json()
       
@@ -77,7 +88,7 @@ export function useChat() {
       console.error('Failed to send message:', error)
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: 'Sorry, I encountered an error processing your request.',
+        content: `Sorry, I encountered an error processing your request. ${error instanceof Error ? error.message : 'Please try again later.'}`,
         type: 'assistant',
         timestamp: new Date()
       }
@@ -117,7 +128,11 @@ export function useChat() {
         })
       })
 
-      if (!response.ok) throw new Error('Failed to get analysis')
+      if (!response.ok) {
+        const errorData = await response.text();
+        console.error('API error:', response.status, errorData);
+        throw new Error(`Analysis failed with status ${response.status}. ${errorData || 'Failed to get analysis'}`);
+      }
       
       const data = await response.json()
       
@@ -132,7 +147,7 @@ export function useChat() {
       console.error('Failed to analyze:', error)
       const errorMessage: Message = {
         id: generateUniqueId(),
-        content: 'Sorry, I encountered an error analyzing the content.',
+        content: `Sorry, I encountered an error analyzing the content. ${error instanceof Error ? error.message : 'Please try again later.'}`,
         type: 'assistant',
         timestamp: new Date()
       }
@@ -155,7 +170,7 @@ export function useChat() {
           name: file.name,
           type: file.type,
           content: processedContent.content,
-          imageUrl: processedContent.imageUrl
+          imageUrl: (processedContent as any).imageUrl
         }]
       }
       
@@ -164,7 +179,7 @@ export function useChat() {
       // Send for analysis immediately
       await analyzeDocument(
         processedContent.content,
-        processedContent.imageUrl
+        (processedContent as any).imageUrl
       )
 
     } catch (error) {
