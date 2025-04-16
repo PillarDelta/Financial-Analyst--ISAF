@@ -1,42 +1,89 @@
+# Strategic Analyst Platform v1.0
 
-STARTEGIC ANALKYST V.1.0
+A powerful strategic analysis platform featuring advanced mathematical modeling and professional output formatting.
 
- Any redistribution or reproduction of part or all of the content in any form is prohibited. You may not, unless you have our express written permission, distribute or commercially exploit the content. Nor may you transmit it or store it on any other website or other form of electronic retrieval system after receiving it.  The information and documents provided in this document/website are provided "as is" without warranty of any kind, either express or implied, including the limited warranties of merchantability, fitness for a particular purpose and non-infringement. Pillar Delta PC  makes reasonable efforts to include accurate and up-to-date information on this site; however, Pillar Delta PC . makes no warranty or representation as to its accuracy or completeness. Pillar Delta PC  periodically adds, changes, improves or updates the information and documents on this site without notice. Pillar Delta PC assumes no responsibility for any errors or omissions in the content of our website. Your use of this website is at your own risk. In no event and under no legal theory shall  Pillar Delta PC  its suppliers or any other party involved in creating, producing or delivering the content of this site be liable to you or any other person for any indirect, direct, special, incidental or consequential damages arising out of your access to or use of this site. In no event shall Pillar Delta PC and/or its respective suppliers be liable for any special, direct, indirect, consequential or incidental damages or any damages whatsoever resulting from loss of use, data or profits, whether in an action of contract, negligence or other tortuous action, arising out of or in connection with the use or performance of software, documents, provision or failure to provide services or information available from this server.  © 2025 Pillar Delta PC  
+## Copyright Notice
 
+© 2025 Pillar Delta PC. Any redistribution or reproduction of part or all of the content in any form is prohibited. You may not, unless you have our express written permission, distribute or commercially exploit the content. This software is provided "as is" without warranty of any kind.
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## Key Features
+
+- **ISAF-V2 (Integrated Strategic Analysis Framework)**: Advanced mathematical implementation using tensor operations for strategic analysis
+- **Professional Report Formatting**: Clean, structured output with executive summaries and actionable recommendations
+- **Cross-Framework Integration**: Integration between PESTEL, Porter's Five Forces, and SWOT analysis
+- **Risk Assessment**: Monte Carlo simulations to evaluate strategic risks
+- **Recommendation Generation**: Data-driven, context-specific strategic recommendations
+
+## ISAF-V2 Framework
+
+The Integrated Strategic Analysis Framework (ISAF) Version 2 combines qualitative business analysis with mathematical modeling to provide comprehensive strategic insights. Key components include:
+
+### Mathematical Implementation
+
+- **Tensor Operations**: Transforms qualitative factors into mathematical tensors
+- **Cross-Framework Coupling**: Matrices that capture interactions between frameworks
+- **Hyperfunctional Equation**: Core mathematical model for strategic state evaluation
+- **Eigendecomposition**: Identifies key strategic factors with maximum impact
+- **Monte Carlo Simulation**: Assesses risk and robustness of strategic decisions
+
+### Output Format
+
+The framework generates professional reports with:
+
+- **Executive Summary**: Highlights key findings and strategic fit score
+- **Key Findings**: Core factors that significantly impact strategic outcomes
+- **Strategic Recommendations**: Actionable, tailored recommendations with confidence levels
+- **Methodology**: Explanation of the analytical approach used
 
 ## Getting Started
 
-First, run the development server:
+To use the strategic analysis functionality:
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```typescript
+// Process a strategic analysis with ISAF-V2
+const analysisText = "... your strategic analysis text ...";
+const result = processWithISAFV2(analysisText);
+console.log(result);
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Implementation Details
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+The ISAF-V2 process follows these steps:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+1. **Factor Extraction**: Extracts PESTEL factors, Five Forces, and SWOT elements
+2. **Mathematical Modeling**: Applies tensor mathematics to model interactions
+3. **Strategic State Calculation**: Computes the integrated strategic state
+4. **Factor Decomposition**: Identifies core factors with significant impact
+5. **Risk Analysis**: Performs Monte Carlo simulations for risk assessment
+6. **Recommendation Generation**: Creates tailored, actionable recommendations
+7. **Report Formatting**: Structures the output in a professional format
 
-## Learn More
+## Recommendation System
 
-To learn more about Next.js, take a look at the following resources:
+The advanced recommendation system generates:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **Factor-Specific Recommendations**: Based on the specific strategic factors identified
+- **Cross-Framework Recommendations**: Derived from interactions between frameworks
+- **Risk Mitigation Recommendations**: Based on Monte Carlo simulation results
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Each recommendation includes:
+- Action title and description
+- Confidence level
+- Impact score
+- Time horizon and resource intensity
+- Supporting factors
+- Financial impact assessment
 
-## Deploy on Vercel
+## Technical Requirements
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Node.js environment
+- TypeScript support
+- No external mathematical libraries required (pure JS implementation)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## License
+
+This project is proprietary and confidential.
+
+## Contact
+
+For more information, contact [info@pillardelta.com].
