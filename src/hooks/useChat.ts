@@ -70,9 +70,30 @@ export function useChat() {
       clearInterval(progressInterval)
 
       if (!response.ok) {
-        const errorData = await response.text();
+        let errorData: any;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = await response.text();
+        }
+
         console.error('API error:', response.status, errorData);
-        throw new Error(`Request failed with status ${response.status}. ${errorData || 'Failed to get response'}`);
+        
+        let errorMessage = 'Failed to get response';
+        
+        // Provide more user-friendly error messages based on status code
+        if (response.status === 401) {
+          errorMessage = 'OpenAI API key is invalid or expired. Please check your configuration.';
+        } else if (response.status === 429) {
+          errorMessage = 'API rate limit exceeded. Please try again later.';
+        } else if (errorData && errorData.error) {
+          errorMessage = errorData.error;
+          if (errorData.details) {
+            errorMessage += `: ${errorData.details}`;
+          }
+        }
+        
+        throw new Error(errorMessage);
       }
       
       const data = await response.json()
@@ -86,13 +107,25 @@ export function useChat() {
       setMessages(prev => [...prev, assistantMessage])
     } catch (error) {
       console.error('Failed to send message:', error)
-      const errorMessage: Message = {
+      
+      let errorMessage = 'Sorry, I encountered an error processing your request.';
+      
+      if (error instanceof Error) {
+        // For API key issues, provide a more helpful message
+        if (error.message.includes('API key')) {
+          errorMessage = `${error.message} Please contact the administrator to fix this issue.`;
+        } else {
+          errorMessage = `${errorMessage} ${error.message}`;
+        }
+      }
+      
+      const errorResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: `Sorry, I encountered an error processing your request. ${error instanceof Error ? error.message : 'Please try again later.'}`,
+        content: errorMessage,
         type: 'assistant',
         timestamp: new Date()
       }
-      setMessages(prev => [...prev, errorMessage])
+      setMessages(prev => [...prev, errorResponse])
     } finally {
       setIsLoading(false)
     }
@@ -129,9 +162,30 @@ export function useChat() {
       })
 
       if (!response.ok) {
-        const errorData = await response.text();
+        let errorData: any;
+        try {
+          errorData = await response.json();
+        } catch {
+          errorData = await response.text();
+        }
+
         console.error('API error:', response.status, errorData);
-        throw new Error(`Analysis failed with status ${response.status}. ${errorData || 'Failed to get analysis'}`);
+        
+        let errorMessage = 'Failed to analyze document';
+        
+        // Provide more user-friendly error messages based on status code
+        if (response.status === 401) {
+          errorMessage = 'OpenAI API key is invalid or expired. Please check your configuration.';
+        } else if (response.status === 429) {
+          errorMessage = 'API rate limit exceeded. Please try again later.';
+        } else if (errorData && errorData.error) {
+          errorMessage = errorData.error;
+          if (errorData.details) {
+            errorMessage += `: ${errorData.details}`;
+          }
+        }
+        
+        throw new Error(errorMessage);
       }
       
       const data = await response.json()
@@ -145,13 +199,25 @@ export function useChat() {
       setMessages(prev => [...prev, analysisMessage])
     } catch (error) {
       console.error('Failed to analyze:', error)
-      const errorMessage: Message = {
+      
+      let errorMessage = 'Sorry, I encountered an error analyzing the content.';
+      
+      if (error instanceof Error) {
+        // For API key issues, provide a more helpful message
+        if (error.message.includes('API key')) {
+          errorMessage = `${error.message} Please contact the administrator to fix this issue.`;
+        } else {
+          errorMessage = `${errorMessage} ${error.message}`;
+        }
+      }
+      
+      const errorResponse: Message = {
         id: generateUniqueId(),
-        content: `Sorry, I encountered an error analyzing the content. ${error instanceof Error ? error.message : 'Please try again later.'}`,
+        content: errorMessage,
         type: 'assistant',
         timestamp: new Date()
       }
-      setMessages(prev => [...prev, errorMessage])
+      setMessages(prev => [...prev, errorResponse])
     }
   }
 
