@@ -257,4 +257,218 @@ function trackStrategicEvolution(strategicDocuments) {
 
 © 2025 Pillar Delta PC. All rights reserved.
 
-This documentation and the described software are proprietary and confidential. Any unauthorized copying, distribution, or use is strictly prohibited. 
+This documentation and the described software are proprietary and confidential. Any unauthorized copying, distribution, or use is strictly prohibited.
+
+# Git Documentation for Strategic Analyst Platform
+
+## Repository Information
+
+- **Repository URL**: https://github.com/PillarDelta/startegic_analyst.git
+- **Project**: Strategic Analyst Platform
+- **Copyright**: © 2025 Pillar Delta PC
+
+## Git Workflow
+
+### Branching Strategy
+
+The repository follows a feature-branch workflow:
+
+- `main`: The primary branch containing production-ready code
+- `theme_support`: Current development branch for UI theme implementation
+- Feature branches: Created for specific features or fixes
+- Backup branches: Named with format `backup_YYYYMMDD` for preserving work
+
+### Daily Development Workflow
+
+1. **Starting work**:
+   ```bash
+   # Get latest changes
+   git pull origin <branch-name>
+   
+   # Create a feature branch if needed
+   git checkout -b feature/<feature-name>
+   ```
+
+2. **During development**:
+   ```bash
+   # Check status of changes
+   git status
+   
+   # Add modified files
+   git add <file-paths>
+   
+   # Commit changes with descriptive message
+   git commit -m "Descriptive message about changes"
+   ```
+
+3. **Pushing changes**:
+   ```bash
+   # Push to remote repository
+   git push origin <branch-name>
+   ```
+
+4. **Creating backup branches**:
+   ```bash
+   # Create date-stamped backup branch
+   git checkout -b backup_$(date +"%Y%m%d")
+   
+   # Push backup to remote
+   git push -u origin backup_$(date +"%Y%m%d")
+   ```
+
+## Commit Message Guidelines
+
+Follow these guidelines for commit messages:
+
+- Start with a verb in imperative form (Add, Fix, Update, Refactor)
+- Keep the first line under 72 characters
+- Provide details in the message body if needed
+
+Examples:
+```
+Update chat API route handling for direct questions
+Add ISAF-V2 mathematical processing engine
+Fix error handling in formatOutput function
+```
+
+## Merge Conflict Resolution
+
+When encountering merge conflicts:
+
+1. Use `git status` to identify conflicted files
+2. Open each file and resolve conflicts (look for `<<<<<<< HEAD`, `=======`, and `>>>>>>> branch-name`)
+3. After resolving, add the files with `git add <file-paths>`
+4. Complete the merge with `git commit`
+
+Alternatively, to abort a merge:
+```bash
+git merge --abort
+```
+
+## Handling Rejections When Pushing
+
+If your push is rejected because the remote contains work you don't have:
+
+```bash
+# Option 1: Pull changes and merge
+git pull --no-rebase origin <branch-name>
+
+# Option 2: Pull changes and rebase
+git pull --rebase origin <branch-name>
+
+# After resolving any conflicts
+git push origin <branch-name>
+```
+
+## Creating Backup Branches
+
+Before making significant changes or when you need to preserve the current state:
+
+```bash
+# Create a new branch with timestamp
+git checkout -b backup_$(date +"%Y%m%d")
+
+# Push the backup branch to remote
+git push -u origin backup_$(date +"%Y%m%d")
+```
+
+## Useful Git Commands
+
+```bash
+# View commit history
+git log
+git log --oneline --graph
+
+# Discard all local changes
+git reset --hard
+
+# View changes in a file
+git diff <file-path>
+
+# View branches and their status
+git branch -vv
+
+# Delete a local branch
+git branch -d <branch-name>
+
+# Create and checkout a new branch
+git checkout -b <branch-name>
+
+# Stash changes temporarily
+git stash
+git stash pop
+```
+
+## GitHub Pull Request Workflow
+
+1. Push your branch to GitHub:
+   ```bash
+   git push -u origin <branch-name>
+   ```
+
+2. Visit the repository on GitHub and create a new pull request
+
+3. Fill in the PR template with:
+   - Description of changes
+   - Related issues
+   - Testing completed
+   - Screenshots (if applicable)
+
+4. Request reviewers from the team
+
+5. After approval, merge using the GitHub interface
+
+## Project-Specific Git Guidelines
+
+1. **Never push directly to main** - always use pull requests
+2. **Create backups before merging complex changes**
+3. **Document API changes** in commit messages
+4. **Include issue references** when applicable using #issue-number
+5. **Keep the repository clean** by removing obsolete branches
+
+## Troubleshooting Common Git Issues
+
+### Unable to push changes
+```bash
+# Check remote status
+git remote -v
+
+# Verify authentication
+git config user.name
+git config user.email
+
+# Reset authentication if needed
+git credential reject https://github.com
+```
+
+### Large files causing issues
+```bash
+# Check if files are too large
+git lfs install
+git lfs track "*.pdf" "*.docx" "*.xlsx"
+```
+
+### Recovering lost commits
+```bash
+# View reflog
+git reflog
+
+# Recover to specific point
+git reset --hard HEAD@{n}
+```
+
+## Git Configuration
+
+Recommended project-specific git configuration:
+
+```bash
+# Set name and email
+git config user.name "Your Name"
+git config user.email "your.email@example.com"
+
+# Set default pull behavior
+git config pull.rebase false
+
+# Set VS Code as default editor
+git config core.editor "code --wait"
+``` 
