@@ -6,6 +6,50 @@ A powerful strategic analysis platform featuring advanced mathematical modeling 
 
 © 2025 Pillar Delta PC. Any redistribution or reproduction of part or all of the content in any form is prohibited. You may not, unless you have our express written permission, distribute or commercially exploit the content. This software is provided "as is" without warranty of any kind.
 
+## Installation Guide
+
+### Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **Node.js**: v18.x or higher (recommended)
+- **npm**: v7.x or higher (comes with Node.js)
+- **Git**: For cloning the repository
+
+### Steps to Install
+
+1. **Clone the Repository**
+
+```bash
+git clone https://github.com/PillarDelta/startegic_analyst.git
+cd startegic_analyst
+```
+
+2. **Install Dependencies**
+
+```bash
+npm install
+```
+
+3. **Set Up Environment Variables**
+
+Create a `.env.local` file in the root directory with the following:
+
+```env
+# OpenAI API Key (Required)
+OPENAI_API_KEY=your-openai-api-key-here
+```
+
+4. **Start the Development Server**
+
+```bash
+npm run dev
+```
+
+The application will be available at [http://localhost:3000](http://localhost:3000).
+
+For more detailed installation instructions and troubleshooting, see [INSTALLATION.md](INSTALLATION.md).
+
 ## Key Features
 
 - **ISAF-V2 (Integrated Strategic Analysis Framework)**: Advanced mathematical implementation using tensor operations for strategic analysis
