@@ -1414,6 +1414,14 @@ function isQuestionFormat(content: string): boolean {
  */
 async function generateQuestionSpecificAnalysis(question: string, openaiClient: OpenAI): Promise<string> {
   try {
+    // Check if the question is too short or insufficient
+    if (!question || question.trim().length < 10) {
+      return `The input provided is too short for a meaningful strategic analysis. Please provide a specific business strategy question or topic you'd like to analyze. For example:
+- "How should Company X approach market expansion in Asia?"
+- "What are the key strategic challenges facing the renewable energy sector?"
+- "Analyze the competitive position of Company Y in the technology market"`;
+    }
+
     // Generate a targeted analysis specifically addressing the question
     const response = await openaiClient.chat.completions.create({
       model: 'gpt-4o',
