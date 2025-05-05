@@ -38,6 +38,7 @@ type ChatContextType = {
   clearChat: () => void
   newChat: () => void
   clearDocuments: () => void
+  chatStarted: boolean
 }
 
 const ChatContext = createContext<ChatContextType | undefined>(undefined)
@@ -49,11 +50,17 @@ export function ChatProvider({ children }: { children: ReactNode }) {
   const [isProcessingFile, setIsProcessingFile] = useState(false)
   const [currentInput, setCurrentInput] = useState('')
   const [documents, setDocuments] = useState<DocumentType[]>([])
+  const [chatStarted, setChatStarted] = useState(false)
 
   const generateUniqueId = () => `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
 
   const sendMessage = async (content: string) => {
     if (!content.trim() || isProcessingFile) return
+
+    // Set chat as started
+    if (!chatStarted) {
+      setChatStarted(true)
+    }
 
     // Set processing state for message
     setIsLoading(true)
@@ -241,6 +248,11 @@ export function ChatProvider({ children }: { children: ReactNode }) {
 
   const handleUpload = async (file: File) => {
     try {
+      // Set chat as started
+      if (!chatStarted) {
+        setChatStarted(true)
+      }
+      
       setIsProcessingFile(true)
       const processedContent = await processDocument(file)
       
@@ -357,7 +369,8 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       hasDocuments: documents.length > 0,
       clearChat,
       newChat,
-      clearDocuments
+      clearDocuments,
+      chatStarted
     }}>
       {children}
     </ChatContext.Provider>

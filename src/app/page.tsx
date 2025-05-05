@@ -37,6 +37,7 @@ export default function Home() {
     isProcessingFile,
     sendMessage,
     handleUpload,
+    chatStarted
   } = useChat()
 
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -191,7 +192,7 @@ export default function Home() {
 
         {/* Input section */}
         <div className={`transition-all duration-700 ease-in-out ${
-          messages.length === 0 
+          !chatStarted
             ? 'fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'
             : 'fixed bottom-[10%] left-1/2 -translate-x-1/2'
         }`}>
