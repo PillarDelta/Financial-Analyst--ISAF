@@ -315,6 +315,66 @@ export function useChat() {
     setMessages(prev => [...prev, analysisMessage])
   }
 
+  // Clear chat function to remove all messages
+  const clearChat = () => {
+    setMessages([{
+      id: generateUniqueId(),
+      content: 'Chat cleared. You can start a new conversation.',
+      type: 'assistant',
+      timestamp: new Date()
+    }])
+    setCurrentInput('')
+    setDocuments([])
+  }
+
+  // New chat function to reset state
+  const newChat = () => {
+    setMessages([{
+      id: generateUniqueId(),
+      content: 'New chat started. How can I help you today?',
+      type: 'assistant',
+      timestamp: new Date()
+    }])
+    setCurrentInput('')
+    setDocuments([])
+    setAnalysisType('risk-analysis') // Reset to default analysis type
+    setIsLoading(false)
+    setIsProcessingFile(false)
+  }
+
+  // Clear documents function
+  const clearDocuments = () => {
+    setDocuments([])
+    
+    // If there are document messages, filter them out
+    setMessages(prevMessages => {
+      const filteredMessages = prevMessages.filter(message => {
+        // Check if it's a document preview message
+        if (message.content === 'DOCUMENT_PREVIEW') {
+          return false;
+        }
+        
+        // Check if it has documents
+        if (message.documents && message.documents.length > 0) {
+          return false;
+        }
+        
+        return true;
+      });
+      
+      // Add a confirmation message
+      return [
+        ...filteredMessages,
+        {
+          id: generateUniqueId(),
+          content: 'Documents cleared.',
+          type: 'assistant',
+          timestamp: new Date()
+        }
+      ]
+    })
+  }
+
   return {
     messages,
     currentInput,
@@ -325,6 +385,9 @@ export function useChat() {
     isProcessingFile,
     sendMessage,
     handleUpload,
-    hasDocuments: documents.length > 0
+    hasDocuments: documents.length > 0,
+    clearChat,
+    newChat,
+    clearDocuments
   }
 } 

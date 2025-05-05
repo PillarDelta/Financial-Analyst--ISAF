@@ -4,10 +4,12 @@ import { useSidebar } from './SidebarContext'
 import Link from 'next/link'
 import { useTheme } from '@/contexts/ThemeContext'
 import { Sun, Moon } from 'lucide-react'
+import { useChat } from '@/hooks/useChat'
 
 export default function Sidebar() {
   const { isOpen, toggleSidebar } = useSidebar()
   const { theme, toggleTheme } = useTheme()
+  const { clearChat, newChat, clearDocuments } = useChat()
 
   return (
     <>
@@ -47,13 +49,22 @@ export default function Sidebar() {
         </div>
 
         <div className="mt-auto flex flex-col gap-2">
-          <button className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-primary)] border border-[var(--border-color)] text-xs font-medium tracking-wider">
+          <button 
+            className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-primary)] border border-[var(--border-color)] text-xs font-medium tracking-wider hover:bg-[rgba(255,255,255,0.12)] transition-colors"
+            onClick={newChat}
+          >
             NEW CHAT
           </button>
-          <button className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-secondary)] text-xs font-medium tracking-wider">
+          <button 
+            className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-secondary)] text-xs font-medium tracking-wider hover:bg-[rgba(255,255,255,0.12)] transition-colors"
+            onClick={clearChat}
+          >
             CLEAR CHAT
           </button>
-          <button className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-secondary)] text-xs font-medium tracking-wider">
+          <button 
+            className="w-full py-2 rounded bg-[rgba(255,255,255,0.08)] text-[var(--text-secondary)] text-xs font-medium tracking-wider hover:bg-[rgba(255,255,255,0.12)] transition-colors"
+            onClick={clearDocuments}
+          >
             CLEAR DOCUMENTS
           </button>
           <Link 
