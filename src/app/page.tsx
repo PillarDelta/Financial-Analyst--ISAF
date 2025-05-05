@@ -1,10 +1,13 @@
 'use client'
 
 import { Upload } from 'lucide-react'
-import { useChat, type AnalysisType } from '@/hooks/useChat'
+import { useChat, type AnalysisType } from '@/contexts/ChatContext'
 import { useRef, useEffect } from 'react'
 import { DocumentPreview } from '@/components/shared/DocumentPreview'
 import { ProcessIndicator } from '@/components/shared/ProcessIndicator'
+
+// Import message type from the context
+import { type Message } from '@/contexts/ChatContext'
 
 // Update Message type in useChat.ts instead of extending it here
 interface DocumentInfo {

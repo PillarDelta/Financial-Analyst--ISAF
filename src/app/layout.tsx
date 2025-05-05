@@ -3,6 +3,7 @@ import './globals.css'
 import Sidebar from '@/components/layout/Sidebar'
 import { SidebarProvider } from '@/components/layout/SidebarContext'
 import { ThemeProvider } from '@/contexts/ThemeContext'
+import { ChatProvider } from '@/contexts/ChatContext'
 
 export const metadata: Metadata = {
   title: 'Financial Analyst Chat Interface',
@@ -18,10 +19,12 @@ export default function RootLayout({
     <html lang="en">
       <body className="bg-[var(--background-dark)] text-[var(--text-primary)] h-screen flex overflow-hidden">
         <ThemeProvider>
-          <SidebarProvider>
-            <Sidebar />
-            {children}
-          </SidebarProvider>
+          <ChatProvider>
+            <SidebarProvider>
+              <Sidebar />
+              {children}
+            </SidebarProvider>
+          </ChatProvider>
         </ThemeProvider>
       </body>
     </html>
