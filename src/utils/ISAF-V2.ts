@@ -78,27 +78,19 @@ interface NonFinancialFactor {
 export function processWithISAFV2(gptAnalysis: string): string {
   console.log("ISAF V2 Processing started");
   
-  // Check if we're in production mode
-  const isProduction = process.env.ISAF_ENV === 'production';
-  console.log(`ISAF-V2 environment: ${isProduction ? 'production' : 'development'}`);
-  
-  // For dev/test environments outside of production, we used to log different message
-  if (!isProduction) {
-    console.log("Development mode: Using direct ISAF-V2 processing");
-  } else {
-    console.log("Production mode: Processing actual input data");
-  }
+  // Force production mode to always use actual input
+  process.env.ISAF_ENV = 'production';
+  const isProduction = true;
+  console.log(`ISAF-V2 environment: production mode (forced)`);
+  console.log("Processing actual input data");
   
   try {
     // Import validation function (dynamic import to avoid circular dependencies)
     const { validateAndFormatInput } = require('./extractFactorsFromText');
     
-    // Validate and format the input text
-    const formattedInput = isProduction 
-      ? validateAndFormatInput(gptAnalysis)
-      : sampleAnalysis; // Use sample in development mode for consistency
-      
-    console.log(`Using ${isProduction ? 'actual' : 'sample'} input for processing`);
+    // Always use the actual input data, never sample data
+    const formattedInput = validateAndFormatInput(gptAnalysis);
+    console.log('Using actual input for processing');
     
     // 1. Extract qualitative and quantitative factors from GPT's output
     const extractedFactors = extractFactorsFromText(formattedInput);

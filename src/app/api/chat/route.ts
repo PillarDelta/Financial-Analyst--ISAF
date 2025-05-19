@@ -185,9 +185,6 @@ Structure your final response as an ISAF strategic analysis that directly answer
           console.log('Input length:', cleanContent.length);
           console.log('Input preview:', cleanContent.substring(0, 200) + '...');
           
-          // Set process flag to ensure we're not in test mode
-          process.env.ISAF_ENV = 'production';
-          
           // Log the actual input to ensure we're not using test data
           console.log('ISAF V2 input content start:');
           console.log(cleanContent.substring(0, 100));
@@ -198,7 +195,7 @@ Structure your final response as an ISAF strategic analysis that directly answer
           const formattedInput = prepareInputForISAF(cleanContent, content);
           console.log('Formatted input for ISAF-V2 processing');
           
-          // Use the original ISAF processing - no more development mode override
+          // Process with the ISAF V2 engine
           const isafResult = processWithISAFV2(formattedInput);
           console.log('ISAF-V2 processing successful');
           console.log('Output length:', isafResult.length);
