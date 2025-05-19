@@ -136,6 +136,17 @@ For more information, contact [info@pillardelta.com].
 
 The platform integrates GPT (Generative Pre-trained Transformer) with ISAF (Integrated Strategic Analysis Framework) to provide enhanced strategic analysis capabilities. This integration combines the qualitative analysis from GPT with quantitative mathematical modeling from ISAF to deliver more robust strategic recommendations.
 
+### Academic Foundation
+
+The ISAF-V2 system is based on the academic paper "Integrated Strategic Analysis Framework: A Tensor-Based Approach to Multi-Framework Business Analysis" (Chen et al., 2022). This groundbreaking paper introduces a mathematical formalism that combines traditional qualitative business frameworks (PESTEL, Porter's Five Forces, SWOT) into a unified quantitative model using tensor mathematics.
+
+Key elements from the paper that we've implemented:
+
+- The strategic state function S(X, t) = ℱ(Φ_E(E, t), Φ_C(C, t), Φ_R(R, t); Θ(t))
+- Cross-framework coupling matrices to quantify interactions between frameworks
+- Eigendecomposition to identify strategic leverage points
+- Monte Carlo simulation framework for strategic risk assessment
+
 ### How It Works
 
 1. **Initial Analysis**: When a user inputs a strategic query, GPT performs an initial qualitative analysis using PESTEL, Porter's Five Forces, and SWOT frameworks.
@@ -164,11 +175,63 @@ The platform integrates GPT (Generative Pre-trained Transformer) with ISAF (Inte
 
 ### Recent Improvements
 
-- Enhanced factor extraction with more robust pattern matching
-- Added transparency about data quality and confidence levels
-- Improved extraction of meaningful factor names and descriptions
-- Ensured the system always processes actual input data rather than sample data
-- Added validation and formatting of inputs for more consistent results
-- Implemented better error handling with graceful fallbacks
+#### Enhanced Factor Extraction
+- Improved pattern recognition algorithms for more accurate extraction of PESTEL, Five Forces, and SWOT elements
+- Better handling of ambiguous or incomplete sections in the input text
+- More accurate weight and impact calculations based on textual emphasis
+- Enhanced classification of strategic factors with proper naming
 
-This integration enables more data-driven strategic analysis than traditional frameworks alone, with recommendations that highlight their confidence levels based on the quality of available information.
+#### Output Formatting Enhancements
+- Redesigned report format with professional box-style headers and clear section dividers
+- Improved visual hierarchy with better spacing and typography
+- Added star rating system (★★★, ★★☆, ★☆☆) for recommendation confidence levels
+- Better organization of implementation details for clearer action plans
+- Enhanced context preservation to maintain important insights from the original analysis
+
+#### System Reliability
+- Added comprehensive validation to ensure analysis quality
+- Implemented better error handling with graceful fallbacks
+- Added transparency about data quality and confidence levels
+- Ensured the system always processes actual input data rather than sample data
+
+These improvements combine to deliver strategic analysis that is not only mathematically rigorous but also visually appealing and easy to understand, with clear indications of confidence and data quality to support decision-making.
+
+### Output Example
+
+Here's a simplified example of how the improved formatting appears in the platform:
+
+```
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃              STRATEGIC ANALYSIS REPORT            ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Executive Summary:
+- The analysis identified key strategic factors across environmental, competitive, and 
+  organizational dimensions.
+- Mathematical modeling reveals 5 critical factors that significantly 
+  impact strategic outcomes.
+- The integrated model projects a strategic fit score of 80.1% (high-confidence).
+
+───────────────────────────────────────────────────────
+
+Data Quality Assessment:
+- Analysis based on 19 extracted data points 
+  (95% of framework elements).
+- Framework completeness: PESTEL (86%), 
+  Five Forces (100%), 
+  SWOT (100%).
+
+───────────────────────────────────────────────────────
+
+Strategic Recommendations:
+1. Strategic Market Positioning [★★★ 71%]
+   • Leverage organizational strengths by expanding their application across markets and 
+     product lines, creating initiatives that maximize your competitive advantage.
+   
+   • Implementation:
+     - Time horizon: immediate
+     - Resource intensity: high
+     - Impact potential: 10/10
+```
+
+This professional formatting makes the output more readable and emphasizes the key information needed for strategic decision-making.
