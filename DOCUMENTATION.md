@@ -6,7 +6,7 @@ The Strategic Analyst Platform is an advanced business analysis tool that levera
 
 ## Theoretical Foundation
 
-The ISAF-V2 system is based on the academic paper "Integrated Strategic Analysis Framework: A Tensor-Based Approach to Multi-Framework Business Analysis" (Chen et al., 2022). This groundbreaking paper introduces a mathematical formalism for combining traditional qualitative business frameworks into a unified quantitative model using tensor mathematics.
+The ISAF-V2 system is based on the proprietary paper "ISAF: A Integrated Strategic Analysis Framework - Mathematical Synthesis and Computational Strategic Analysis." developed by Kyriakos Taraktis at Pillar Delta. This innovative internal research paper introduces a mathematical formalism for combining traditional qualitative business frameworks into a unified quantitative model using tensor mathematics.
 
 ### Key Theoretical Contributions from the Paper
 
@@ -20,7 +20,7 @@ The ISAF-V2 system is based on the academic paper "Integrated Strategic Analysis
 
 5. **Monte Carlo Simulation Framework**: The paper outlines a methodology for calculating strategic risk through perturbation analysis and Monte Carlo simulation of the strategic state function.
 
-Our implementation follows the mathematical formalism outlined in the paper, translating the theoretical constructs into a practical computational system that delivers actionable business insights.
+Our implementation directly applies the mathematical formalism outlined in this internal research paper, translating the theoretical constructs into a practical computational system that delivers actionable business insights.
 
 ## Development Process
 
@@ -30,7 +30,7 @@ The ISAF-V2 system was developed through a structured process that combined theo
 
 1. **Literature Review**: Conducted comprehensive review of strategic analysis frameworks, mathematical modeling techniques, and existing business analysis tools.
 
-2. **Academic Foundation**: Identified the "Integrated Strategic Analysis Framework" paper as the theoretical foundation for the project.
+2. **Academic Foundation**: Developed the "ISAF: A Integrated Strategic Analysis Framework - Mathematical Synthesis and Computational Strategic Analysis." paper by Kyriakos Taraktis (Pillar Delta) as the theoretical foundation for the project.
 
 3. **Requirements Gathering**: Defined key requirements including framework support, mathematical rigor, natural language processing capabilities, and output format.
 

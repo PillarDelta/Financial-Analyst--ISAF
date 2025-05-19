@@ -138,7 +138,7 @@ The platform integrates GPT (Generative Pre-trained Transformer) with ISAF (Inte
 
 ### Academic Foundation
 
-The ISAF-V2 system is based on the academic paper "Integrated Strategic Analysis Framework: A Tensor-Based Approach to Multi-Framework Business Analysis" (Chen et al., 2022). This groundbreaking paper introduces a mathematical formalism that combines traditional qualitative business frameworks (PESTEL, Porter's Five Forces, SWOT) into a unified quantitative model using tensor mathematics.
+The ISAF-V2 system is based on the proprietary paper "ISAF: A Integrated Strategic Analysis Framework - Mathematical Synthesis and Computational Strategic Analysis." developed by Kyriakos Taraktis at Pillar Delta. This groundbreaking paper introduces a mathematical formalism that combines traditional qualitative business frameworks (PESTEL, Porter's Five Forces, SWOT) into a unified quantitative model using tensor mathematics.
 
 Key elements from the paper that we've implemented:
 
