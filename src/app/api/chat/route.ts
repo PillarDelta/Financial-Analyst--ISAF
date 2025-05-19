@@ -255,7 +255,9 @@ Structure your final response as an ISAF strategic analysis that directly answer
  * This ensures the input has proper structure for ISAF to analyze
  */
 function prepareInputForISAF(gptOutput: string, originalInput: string): string {
-  // Ensure the input has the proper sections for ISAF analysis
+  console.log('Preparing input for ISAF processing');
+  
+  // Define the required sections for ISAF analysis
   const sections = [
     'ENVIRONMENTAL ANALYSIS (PESTEL)',
     'COMPETITIVE ASSESSMENT',
@@ -267,90 +269,197 @@ function prepareInputForISAF(gptOutput: string, originalInput: string): string {
   for (const section of sections) {
     if (!gptOutput.includes(section)) {
       needsFormatting = true;
+      console.log(`Missing required section: ${section}`);
       break;
     }
   }
   
-  // If already well-formatted, just return the original
+  // If already well-formatted, just return the original GPT output
   if (!needsFormatting) {
+    console.log('GPT output is already well-structured for ISAF processing');
     return gptOutput;
   }
   
-  // Parse out company information
-  const companyName = gptOutput.includes('Thales') ? 'Thales' : 
-                      (gptOutput.match(/([A-Z][a-zA-Z\s]+)(?:is|was|has|provides|operates)/i)?.[1] || 'The company');
+  console.log('Restructuring GPT output for optimal ISAF processing');
   
-  // Format the input to ensure it has the proper structure
-  return `
+  // Extract executive summary or introduction for context preservation
+  const execSummaryMatch = gptOutput.match(/(?:EXECUTIVE\s+SUMMARY|INTRODUCTION)(?:\s*\n\s*|\s*:)([\s\S]*?)(?=\n\s*[A-Z\s]+:|$)/i);
+  const executiveSummary = execSummaryMatch ? execSummaryMatch[1].trim() : 
+                          'Executive summary not found in the original analysis.';
+  
+  // Use more advanced regex to identify company name
+  let companyName = 'The company';
+  const companyNamePatterns = [
+    /([A-Z][a-zA-Z\s]+)(?:is|was|has|provides|operates)/i,
+    /([A-Z][a-zA-Z\s]+)(?:Inc\.?|Corp\.?|Corporation|Ltd\.?|Limited|LLC|GmbH)/i,
+    /([A-Z][a-zA-Z\s]+)(?:'s|\s+company|\s+group)/i,
+    /analysis\s+of\s+([A-Z][a-zA-Z\s]+)/i
+  ];
+  
+  for (const pattern of companyNamePatterns) {
+    const match = gptOutput.match(pattern);
+    if (match && match[1] && match[1].length < 30) {
+      companyName = match[1].trim();
+      console.log(`Identified company name: ${companyName}`);
+      break;
+    }
+  }
+  
+  // Try to extract company description
+  const companyDescMatch = gptOutput.match(new RegExp(`${companyName}\\s+is\\s+([^.]+)`, 'i'));
+  const companyDescription = companyDescMatch ? companyDescMatch[1].trim() : '';
+  
+  // Build a more structured version of the PESTEL analysis
+  const pestelSections = {
+    'Political': extractFactorSection(gptOutput, 'Political', ['Economic', 'Social', 'Technological', 'Environmental', 'Legal']),
+    'Economic': extractFactorSection(gptOutput, 'Economic', ['Political', 'Social', 'Technological', 'Environmental', 'Legal']),
+    'Social': extractFactorSection(gptOutput, 'Social', ['Political', 'Economic', 'Technological', 'Environmental', 'Legal']),
+    'Technological': extractFactorSection(gptOutput, 'Technological', ['Political', 'Economic', 'Social', 'Environmental', 'Legal']),
+    'Environmental': extractFactorSection(gptOutput, 'Environmental', ['Political', 'Economic', 'Social', 'Technological', 'Legal']),
+    'Legal': extractFactorSection(gptOutput, 'Legal', ['Political', 'Economic', 'Social', 'Technological', 'Environmental'])
+  };
+  
+  // Build the Five Forces sections
+  const forcesSections = {
+    'Competitive Rivalry': extractFactorSection(gptOutput, 'Competitive Rivalry|Competition|Rivalry', ['Supplier', 'Buyer', 'Entrants', 'Substitutes']),
+    'Supplier Power': extractFactorSection(gptOutput, 'Supplier Power|Suppliers', ['Competition', 'Buyer', 'Entrants', 'Substitutes']),
+    'Buyer Power': extractFactorSection(gptOutput, 'Buyer Power|Customer Power|Buyers', ['Competition', 'Supplier', 'Entrants', 'Substitutes']),
+    'Threat of New Entrants': extractFactorSection(gptOutput, 'New Entrants|Entrants', ['Competition', 'Supplier', 'Buyer', 'Substitutes']),
+    'Threat of Substitutes': extractFactorSection(gptOutput, 'Substitutes', ['Competition', 'Supplier', 'Buyer', 'Entrants'])
+  };
+  
+  // Build SWOT sections
+  const swotSections = {
+    'Strengths': extractFactorSection(gptOutput, 'Strengths', ['Weaknesses', 'Opportunities', 'Threats']),
+    'Weaknesses': extractFactorSection(gptOutput, 'Weaknesses', ['Strengths', 'Opportunities', 'Threats']),
+    'Opportunities': extractFactorSection(gptOutput, 'Opportunities', ['Strengths', 'Weaknesses', 'Threats']),
+    'Threats': extractFactorSection(gptOutput, 'Threats', ['Strengths', 'Weaknesses', 'Opportunities'])
+  };
+  
+  // Format each section with bullets for better parsing by ISAF
+  const formatSection = (content: string): string => {
+    if (!content) return 'Not enough information available in the analysis.';
+    
+    // Convert paragraphs to bullet points if needed
+    if (!content.includes('•') && !content.includes('- ')) {
+      const sentences = content.split(/\.\s+/);
+      return sentences
+        .filter(s => s.trim().length > 10)
+        .map(s => `• ${s.trim()}.`)
+        .join('\n');
+    }
+    
+    return content;
+  };
+  
+  // Build the well-structured output for ISAF processing
+  const formattedOutput = `
+EXECUTIVE SUMMARY:
+${executiveSummary}
+
 ENVIRONMENTAL ANALYSIS (PESTEL)
 
 Political Factors:
-• ${gptOutput.includes('Political') ? extractSection(gptOutput, 'Political', 'Economic') : 'Political factors affecting the company operations.'}
+${formatSection(pestelSections['Political'])}
 
 Economic Factors:
-• ${gptOutput.includes('Economic') ? extractSection(gptOutput, 'Economic', 'Social') : 'Economic conditions impacting business performance.'}
+${formatSection(pestelSections['Economic'])}
 
 Social Factors:
-• ${gptOutput.includes('Social') ? extractSection(gptOutput, 'Social', 'Technological') : 'Social trends relevant to the business context.'}
+${formatSection(pestelSections['Social'])}
 
 Technological Factors:
-• ${gptOutput.includes('Technological') ? extractSection(gptOutput, 'Technological', 'Environmental') : 'Technological developments affecting the industry.'}
+${formatSection(pestelSections['Technological'])}
 
 Environmental Factors:
-• ${gptOutput.includes('Environmental') ? extractSection(gptOutput, 'Environmental', 'Legal') : 'Environmental considerations for sustainable operations.'}
+${formatSection(pestelSections['Environmental'])}
 
 Legal Factors:
-• ${gptOutput.includes('Legal') ? extractSection(gptOutput, 'Legal', 'COMPETITIVE') : 'Legal and regulatory framework governing operations.'}
+${formatSection(pestelSections['Legal'])}
 
 COMPETITIVE ASSESSMENT (Porter's Five Forces)
 
 Competitive Rivalry:
-${gptOutput.includes('Competition') || gptOutput.includes('Rivalry') ? extractSection(gptOutput, 'Competition', 'Supplier') : 'Competitive landscape and market position.'}
+${formatSection(forcesSections['Competitive Rivalry'])}
 
 Supplier Power:
-${gptOutput.includes('Supplier') ? extractSection(gptOutput, 'Supplier', 'Buyer') : 'Supply chain relationships and dependencies.'}
+${formatSection(forcesSections['Supplier Power'])}
 
 Buyer Power:
-${gptOutput.includes('Buyer') || gptOutput.includes('Customer') ? extractSection(gptOutput, 'Buyer', 'New Entrants') : 'Customer relationships and bargaining power.'}
+${formatSection(forcesSections['Buyer Power'])}
 
 Threat of New Entrants:
-${gptOutput.includes('Entrants') ? extractSection(gptOutput, 'Entrants', 'Substitutes') : 'Market entry barriers and potential new competitors.'}
+${formatSection(forcesSections['Threat of New Entrants'])}
 
 Threat of Substitutes:
-${gptOutput.includes('Substitutes') ? extractSection(gptOutput, 'Substitutes', 'ORGANIZATIONAL') : 'Alternative solutions and technologies.'}
+${formatSection(forcesSections['Threat of Substitutes'])}
 
 ORGANIZATIONAL CAPABILITY (SWOT)
 
 Strengths:
-• ${gptOutput.includes('Strengths') ? extractSection(gptOutput, 'Strengths', 'Weaknesses') : 'Core competencies and competitive advantages.'}
+${formatSection(swotSections['Strengths'])}
 
 Weaknesses:
-• ${gptOutput.includes('Weaknesses') ? extractSection(gptOutput, 'Weaknesses', 'Opportunities') : 'Organizational limitations and areas for improvement.'}
+${formatSection(swotSections['Weaknesses'])}
 
 Opportunities:
-• ${gptOutput.includes('Opportunities') ? extractSection(gptOutput, 'Opportunities', 'Threats') : 'Market opportunities and growth potential.'}
+${formatSection(swotSections['Opportunities'])}
 
 Threats:
-• ${gptOutput.includes('Threats') ? extractSection(gptOutput, 'Threats', 'END') : 'External threats and challenges facing the organization.'}
+${formatSection(swotSections['Threats'])}
 
-ORIGINAL CONTENT:
-${originalInput}
+COMPANY INFORMATION:
+Company Name: ${companyName}
+${companyDescription ? `Description: ${companyDescription}` : ''}
+
+ORIGINAL INPUT:
+${originalInput.substring(0, 500)}...
 `;
+
+  console.log('Successfully restructured content for ISAF processing');
+  return formattedOutput;
 }
 
 /**
- * Extract section content from text
+ * Extract a specific factor section using more robust pattern matching
  */
-function extractSection(text: string, sectionStart: string, sectionEnd: string): string {
-  const regex = new RegExp(`${sectionStart}[^:]*?:?\\s*([\\s\\S]*?)(?=${sectionEnd}|$)`, 'i');
-  const match = text.match(regex);
+function extractFactorSection(text: string, sectionName: string, otherSections: string[]): string {
+  // Create a pattern that looks for the section and captures content until the next section
+  const escapedName = sectionName.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&');
+  const escapedOthers = otherSections.map(s => s.replace(/[|\\{}()[\]^$+*?.]/g, '\\$&'));
   
-  if (match && match[1]) {
-    const content = match[1].trim();
-    return content.length > 5 ? content : `${sectionStart} factors for strategic consideration`;
+  // Try multiple patterns with different levels of specificity
+  const patterns = [
+    // Most specific - exact section heading with colon
+    new RegExp(`${escapedName}[^:]*?:\\s*([\\s\\S]*?)(?=(?:${escapedOthers.join('|')})\\s*:|COMPETITIVE|ORGANIZATIONAL|COMPANY|ORIGINAL|$)`, 'i'),
+    // Look for section with 'factors' if applicable
+    new RegExp(`${escapedName}\\s+Factors?[^:]*?:\\s*([\\s\\S]*?)(?=(?:${escapedOthers.join('|')})\\s*Factors?:|COMPETITIVE|ORGANIZATIONAL|COMPANY|ORIGINAL|$)`, 'i'),
+    // Most general pattern
+    new RegExp(`${escapedName}[\\s\\S]*?([\\s\\S]*?)(?=(?:${escapedOthers.join('|')})|COMPETITIVE|ORGANIZATIONAL|COMPANY|ORIGINAL|$)`, 'i')
+  ];
+  
+  // Try each pattern until we find a match
+  for (const pattern of patterns) {
+    const match = text.match(pattern);
+    if (match && match[1] && match[1].trim().length > 10) {
+      return match[1].trim();
+    }
   }
   
-  return `${sectionStart} factors for strategic consideration`;
+  // Extract any sentences that mention this section
+  const sectionKeywords = sectionName.split('|');
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+  const relevantSentences = sentences.filter(sentence => 
+    sectionKeywords.some(keyword => 
+      sentence.toLowerCase().includes(keyword.toLowerCase())
+    )
+  );
+  
+  if (relevantSentences.length > 0) {
+    return relevantSentences.join(' ');
+  }
+  
+  return '';
 }
 
 /**

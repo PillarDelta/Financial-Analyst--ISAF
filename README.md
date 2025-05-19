@@ -131,3 +131,44 @@ This project is proprietary and confidential.
 ## Contact
 
 For more information, contact [info@pillardelta.com].
+
+## GPT-ISAF Integration
+
+The platform integrates GPT (Generative Pre-trained Transformer) with ISAF (Integrated Strategic Analysis Framework) to provide enhanced strategic analysis capabilities. This integration combines the qualitative analysis from GPT with quantitative mathematical modeling from ISAF to deliver more robust strategic recommendations.
+
+### How It Works
+
+1. **Initial Analysis**: When a user inputs a strategic query, GPT performs an initial qualitative analysis using PESTEL, Porter's Five Forces, and SWOT frameworks.
+
+2. **Factor Extraction**: The ISAF system extracts structured factors from GPT's output, including:
+   - PESTEL factors with weights, impacts, and uncertainty levels
+   - Competitive forces with strength assessments and influence relationships
+   - SWOT elements with impact scores
+
+3. **Mathematical Processing**: ISAF performs mathematical calculations on these factors:
+   - Eigendecomposition to identify dominant factors
+   - Cross-impact matrix calculations between frameworks
+   - Monte Carlo simulations for uncertainty analysis
+   - Strategic fit tensor calculations
+
+4. **Confidence Assessment**: The system evaluates the quality of extracted data and provides transparency about confidence levels:
+   - Framework completeness percentages
+   - Data quality indicators ("high-confidence", "medium-confidence", or "indicative")
+   - Confidence scores for each recommendation
+
+5. **Output Generation**: The final output includes:
+   - Strategic fit score with confidence level
+   - Key findings based on mathematical analysis
+   - Strategic recommendations with prioritization
+   - Methodology explanation
+
+### Recent Improvements
+
+- Enhanced factor extraction with more robust pattern matching
+- Added transparency about data quality and confidence levels
+- Improved extraction of meaningful factor names and descriptions
+- Ensured the system always processes actual input data rather than sample data
+- Added validation and formatting of inputs for more consistent results
+- Implemented better error handling with graceful fallbacks
+
+This integration enables more data-driven strategic analysis than traditional frameworks alone, with recommendations that highlight their confidence levels based on the quality of available information.

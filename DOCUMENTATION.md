@@ -471,4 +471,54 @@ git config pull.rebase false
 
 # Set VS Code as default editor
 git config core.editor "code --wait"
-``` 
+```
+
+## Testing the ISAF Integration
+
+The platform integrates GPT with the Integrated Strategic Analysis Framework (ISAF) for enhanced strategic analysis. To test this integration, you can use the following methods:
+
+### Method 1: Direct Module Test
+
+This tests the ISAF module directly with predefined inputs:
+
+```bash
+npm run test:isaf
+```
+
+This will:
+- Test the ISAF-V2 module with sample inputs
+- Generate output files in the `test-results` directory
+- Verify that key components like strategic scoring and recommendations are present
+
+### Method 2: API Endpoint Test
+
+This tests the full integration through the API endpoint:
+
+```bash
+# First, make sure the development server is running
+npm run dev
+
+# In a separate terminal, run the API test
+npm run test:isaf-api
+```
+
+This will:
+- Send sample strategic analysis requests to the API
+- Process the responses to verify ISAF integration features
+- Check for data quality indicators and confidence levels
+- Save results to the `test-results` directory
+
+### Interpreting Test Results
+
+When running these tests, look for:
+
+1. **Strategic fit score** - A percentage value showing the overall strategic alignment
+2. **Data quality indicators** - "high-confidence", "medium-confidence", or "indicative"
+3. **Framework completeness percentages** - How completely each framework (PESTEL, Five Forces, SWOT) was filled out
+4. **Recommendation confidence levels** - Percentage values for each recommendation's confidence
+5. **Methodology explanations** - Descriptions of the mathematical methods used
+
+If you encounter errors during testing, check:
+- The `.env` file for a valid OpenAI API key
+- The server logs for any processing errors
+- Network connectivity to the API endpoint 

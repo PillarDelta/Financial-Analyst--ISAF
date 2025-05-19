@@ -92,6 +92,65 @@ export default function Home() {
 
   const renderMessage = (message: ExtendedMessage) => {
     if (message.type === 'assistant') {
+      // Check if this is an ISAF strategic analysis
+      if (message.content.includes('┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓')) {
+        // This is a formatted ISAF report
+        return (
+          <div className="space-y-4 font-mono">
+            {message.content.split('\n').map((line: string, i: number) => {
+              // Specially styled header box
+              if (line.includes('┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓') ||
+                  line.includes('┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛') ||
+                  line.includes('┃')) {
+                return (
+                  <div key={i} className="text-[var(--blue-accent)] text-sm">
+                    {line}
+                  </div>
+                )
+              }
+              
+              // Section headers
+              if (line.trim() === 'Executive Summary:' || 
+                  line.trim() === 'Data Quality Assessment:' ||
+                  line.trim() === 'Context Analysis:' ||
+                  line.trim() === 'Key Findings:' ||
+                  line.trim() === 'Strategic Recommendations:' ||
+                  line.trim() === 'Methodology:') {
+                return (
+                  <div key={i} className="text-[var(--blue-accent)] font-semibold mt-6 mb-2">
+                    {line}
+                  </div>
+                )
+              }
+              
+              // Section dividers
+              if (line.includes('───────────────────────────────────────────────────────')) {
+                return (
+                  <hr key={i} className="border-[var(--border-color)] my-2" />
+                )
+              }
+              
+              // Handle recommendation titles with confidence indicators
+              if (/^\d+\.\s+.*\[★+☆*\s+\d+%\]/.test(line)) {
+                return (
+                  <div key={i} className="text-[var(--text-primary)] font-semibold mt-4">
+                    {line}
+                  </div>
+                )
+              }
+              
+              // Regular lines
+              return (
+                <div key={i} className="text-[var(--text-primary)] text-sm whitespace-pre-wrap">
+                  {line}
+                </div>
+              )
+            })}
+          </div>
+        )
+      }
+      
+      // Default handling for non-ISAF content
       return (
         <div className="space-y-12">
           {message.content.split('\n\n').map((paragraph: string, i: number) => {

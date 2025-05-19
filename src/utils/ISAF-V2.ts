@@ -78,36 +78,300 @@ interface NonFinancialFactor {
 export function processWithISAFV2(gptAnalysis: string): string {
   console.log("ISAF V2 Processing started");
   
-  // Force production mode to always use actual input
+  // Always use actual input data
   process.env.ISAF_ENV = 'production';
-  const isProduction = true;
-  console.log(`ISAF-V2 environment: production mode (forced)`);
-  console.log("Processing actual input data");
+  console.log(`ISAF-V2 running in production mode with actual input data`);
   
   try {
-    // Import validation function (dynamic import to avoid circular dependencies)
+    // Import validation function
     const { validateAndFormatInput } = require('./extractFactorsFromText');
     
-    // Always use the actual input data, never sample data
+    // Validate the input and perform basic formatting
     const formattedInput = validateAndFormatInput(gptAnalysis);
-    console.log('Using actual input for processing');
+    console.log('Input validated and formatted for processing');
+    
+    // Check if input has sufficient structure for analysis
+    const hasStructuralElements = checkInputStructure(formattedInput);
+    console.log(`Input structure check: ${hasStructuralElements.valid ? 'VALID' : 'INCOMPLETE'} - ${hasStructuralElements.missingElements.length} missing elements`);
     
     // 1. Extract qualitative and quantitative factors from GPT's output
     const extractedFactors = extractFactorsFromText(formattedInput);
     
-    // 2. Perform robust mathematical modeling with error handling
-    const calculationResults = performCalculations(extractedFactors);
+    // Track how many factors were extracted vs defaulted
+    const extractionStats = calculateExtractionStats(extractedFactors);
+    console.log(`Extracted ${extractionStats.extracted} factors, defaulted ${extractionStats.defaulted} factors`);
     
-    // 3. Generate specific, diverse recommendations based on the analysis
-    const recommendations = generateRecommendations(extractedFactors, calculationResults);
+    // 2. Perform calculations with confidence levels based on data quality
+    const calculationResults = performCalculations(extractedFactors, extractionStats);
     
-    // 4. Format output with clean, professional formatting and no repetition
-    return formatOutput(formattedInput, extractedFactors, calculationResults, recommendations);
+    // 3. Generate recommendations with confidence based on data quality
+    const recommendations = generateRecommendations(extractedFactors, calculationResults, extractionStats);
+    
+    // 4. Format output with confidence indicators
+    return formatOutputWithConfidence(formattedInput, extractedFactors, calculationResults, recommendations, extractionStats);
   } catch (error) {
     console.error("Error in ISAF V2 processing:", error);
-    // Provide a graceful fallback with explanation rather than showing raw error
+    // Provide a graceful fallback with explanation
     return formatErrorOutput(error instanceof Error ? error.message : String(error));
   }
+}
+
+/**
+ * Check if the input has sufficient structure for proper analysis
+ */
+function checkInputStructure(text: string): { valid: boolean; missingElements: string[] } {
+  const requiredElements = [
+    { name: 'PESTEL Analysis', patterns: ['ENVIRONMENTAL ANALYSIS', 'PESTEL', 'Political', 'Economic'] },
+    { name: 'Competitive Assessment', patterns: ['COMPETITIVE ASSESSMENT', 'Porter', 'Five Forces', 'Rivalry', 'Supplier'] },
+    { name: 'SWOT Analysis', patterns: ['SWOT', 'Strengths', 'Weaknesses', 'Opportunities', 'Threats'] }
+  ];
+  
+  const missingElements: string[] = [];
+  
+  // Check each required element
+  for (const element of requiredElements) {
+    const elementPresent = element.patterns.some(pattern => 
+      text.includes(pattern) || text.toLowerCase().includes(pattern.toLowerCase())
+    );
+    
+    if (!elementPresent) {
+      missingElements.push(element.name);
+    }
+  }
+  
+  return {
+    valid: missingElements.length === 0,
+    missingElements
+  };
+}
+
+/**
+ * Calculate statistics about the extraction quality
+ */
+function calculateExtractionStats(extractedFactors: any): { 
+  extracted: number; 
+  defaulted: number; 
+  dataQuality: number; 
+  frameworkCompleteness: Record<string, number> 
+} {
+  let extracted = 0;
+  let defaulted = 0;
+  const frameworkCompleteness: Record<string, number> = {
+    'PESTEL': 0,
+    'Five Forces': 0,
+    'SWOT': 0
+  };
+  
+  // Count PESTEL factors
+  const pestelTotal = extractedFactors.pestelFactors.length;
+  const pestelDefaulted = extractedFactors.pestelFactors.filter((f: any) => 
+    f.description.includes('Generated based on industry') || 
+    f.description.includes('Derived from context')
+  ).length;
+  
+  extracted += (pestelTotal - pestelDefaulted);
+  defaulted += pestelDefaulted;
+  frameworkCompleteness['PESTEL'] = pestelTotal > 0 ? (pestelTotal - pestelDefaulted) / pestelTotal : 0;
+  
+  // Count Five Forces
+  const forcesTotal = extractedFactors.forces.length;
+  const forcesDefaulted = extractedFactors.forces.filter((f: any) => 
+    !f.description || f.description.includes('industry force affecting')
+  ).length;
+  
+  extracted += (forcesTotal - forcesDefaulted);
+  defaulted += forcesDefaulted;
+  frameworkCompleteness['Five Forces'] = forcesTotal > 0 ? (forcesTotal - forcesDefaulted) / forcesTotal : 0;
+  
+  // Count SWOT elements
+  const swotTotal = extractedFactors.swotElements.length;
+  const swotDefaulted = extractedFactors.swotElements.filter((e: any) => 
+    !e.description || e.description.length < 15
+  ).length;
+  
+  extracted += (swotTotal - swotDefaulted);
+  defaulted += swotDefaulted;
+  frameworkCompleteness['SWOT'] = swotTotal > 0 ? (swotTotal - swotDefaulted) / swotTotal : 0;
+  
+  // Calculate overall data quality (0-1)
+  const total = pestelTotal + forcesTotal + swotTotal;
+  const dataQuality = total > 0 ? extracted / total : 0;
+  
+  return {
+    extracted,
+    defaulted,
+    dataQuality,
+    frameworkCompleteness
+  };
+}
+
+/**
+ * Format output with confidence indicators based on extraction quality
+ */
+function formatOutputWithConfidence(
+  gptAnalysis: string, 
+  extractedFactors: any, 
+  calculationResults: any, 
+  recommendations: StrategicRecommendation[],
+  extractionStats: { 
+    extracted: number; 
+    defaulted: number; 
+    dataQuality: number; 
+    frameworkCompleteness: Record<string, number> 
+  }
+): string {
+  // Handle error cases
+  if (calculationResults.error) {
+    return `
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃              STRATEGIC ANALYSIS (LIMITED)         ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Our strategic analysis system encountered an issue while processing your data.
+
+We recommend reviewing the input data to ensure it contains:
+• Company overview with metrics (revenue, profit)
+• Market information and competitive landscape
+• Strengths and challenges
+• External environment factors
+
+If the data seems complete, please try again or contact support.
+
+Technical details: ${calculationResults.errorMessage}
+`;
+  }
+  
+  // Data quality descriptor
+  let dataQualityDesc = '';
+  if (extractionStats.dataQuality > 0.8) {
+    dataQualityDesc = 'high-confidence';
+  } else if (extractionStats.dataQuality > 0.5) {
+    dataQualityDesc = 'medium-confidence';
+  } else {
+    dataQualityDesc = 'indicative';
+  }
+  
+  // Extract the original executive summary or introduction from the GPT analysis
+  const contextualSummary = extractContextualSummary(gptAnalysis);
+  
+  // Format successful analysis with data confidence indicators and contextual information
+  return `
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃              STRATEGIC ANALYSIS REPORT            ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+Executive Summary:
+- The analysis identified key strategic factors across environmental, competitive, and 
+  organizational dimensions.
+- Mathematical modeling reveals ${calculationResults.coreFactors.length} critical factors that significantly 
+  impact strategic outcomes.
+- The integrated model projects a strategic fit score of ${(calculationResults.integratedValue * 100).toFixed(1)}% (${dataQualityDesc}).
+
+───────────────────────────────────────────────────────
+
+Data Quality Assessment:
+- Analysis based on ${extractionStats.extracted} extracted data points 
+  (${Math.round(extractionStats.dataQuality * 100)}% of framework elements).
+- Framework completeness: PESTEL (${Math.round(extractionStats.frameworkCompleteness['PESTEL'] * 100)}%), 
+  Five Forces (${Math.round(extractionStats.frameworkCompleteness['Five Forces'] * 100)}%), 
+  SWOT (${Math.round(extractionStats.frameworkCompleteness['SWOT'] * 100)}%).
+
+───────────────────────────────────────────────────────
+
+Context Analysis:
+${contextualSummary}
+
+───────────────────────────────────────────────────────
+
+Key Findings:
+${formatKeyFindings(calculationResults)}
+
+───────────────────────────────────────────────────────
+
+Strategic Recommendations:
+${formatRecommendations(recommendations)}
+
+───────────────────────────────────────────────────────
+
+Methodology:
+${formatMethodology(calculationResults.calculationExplanations)}
+
+Note: This analysis is ${dataQualityDesc} based on the quality and completeness of input data.`;
+}
+
+/**
+ * Extract contextual summary from the GPT analysis to preserve important context
+ * This returns a bullet-point list of key contextual information
+ */
+function extractContextualSummary(text: string): string {
+  // Try to extract the executive summary first
+  const execSummaryMatch = text.match(/(?:EXECUTIVE\s+SUMMARY|INTRODUCTION)(?:\s*\n\s*|\s*:)([\s\S]*?)(?=\n\s*[A-Z\s]+:|$)/i);
+  let context = execSummaryMatch ? execSummaryMatch[1].trim() : '';
+  
+  // Try to extract company name and description
+  const companyNamePatterns = [
+    /([A-Z][a-zA-Z\s]+(?:Inc\.?|Corp\.?|Corporation|Ltd\.?|Limited|LLC|GmbH))/i,
+    /([A-Z][a-zA-Z\s]+)(?:is|has|provides|specializes)/i,
+    /analysis\s+(?:of|for)\s+([A-Z][a-zA-Z\s]+)/i
+  ];
+  
+  let companyName = '';
+  for (const pattern of companyNamePatterns) {
+    const match = text.match(pattern);
+    if (match && match[1] && match[1].length < 40) {
+      companyName = match[1].trim();
+      break;
+    }
+  }
+  
+  // Extract key sentences from the text
+  const sentences = text.match(/[^.!?]+[.!?]+/g) || [];
+  const keywordPatterns = [
+    /market|industry|position|leader|competitive/i,
+    /growth|revenue|financial|profit|sales/i,
+    /challenge|threat|risk|issue|problem/i,
+    /opportunity|potential|future|strategy|innovation/i
+  ];
+  
+  const relevantSentences: string[] = [];
+  keywordPatterns.forEach(pattern => {
+    const matched = sentences.filter(s => pattern.test(s) && s.length < 200);
+    if (matched.length > 0) {
+      relevantSentences.push(...matched.slice(0, 1));
+    }
+  });
+  
+  // If we found an executive summary, use it; otherwise build from relevant sentences
+  if (context && context.length > 50) {
+    // Convert the executive summary to a bullet-point list
+    const paragraphs = context.split(/\n\s*\n/);
+    const bullets = paragraphs.map(p => p.trim())
+      .filter(p => p.length > 0)
+      .map(p => `• ${p}`);
+    
+    return bullets.join('\n');
+  } else if (companyName || relevantSentences.length > 0) {
+    // Build a context from company name and key sentences
+    const contextPoints = [];
+    
+    if (companyName) {
+      contextPoints.push(`• ${companyName}`);
+    }
+    
+    // Add cleaned relevant sentences as bullet points
+    relevantSentences.forEach(sentence => {
+      const cleaned = sentence.trim()
+        .replace(/^[,;:\s]+/, '')  // Remove leading punctuation
+        .replace(/^(and|but|however|therefore|thus|hence|so|moreover|furthermore|additionally)\s+/i, '');
+      
+      contextPoints.push(`• ${cleaned}`);
+    });
+    
+    return contextPoints.join('\n');
+  }
+  
+  // Default message if we couldn't extract meaningful context
+  return "• Limited contextual information available in the original analysis.";
 }
 
 /**
@@ -190,27 +454,29 @@ function formatKeyFindings(calculationResults: any): string {
   if (calculationResults.coreFactors && calculationResults.coreFactors.length > 0) {
     const topFactors = calculationResults.coreFactors
       .slice(0, 3)
-      .map((factor: any) => `${factor.name} (impact score: ${factor.score.toFixed(1)})`);
+      .map((factor: any, index: number) => 
+        `   ${index + 1}. ${factor.name} (impact score: ${factor.score.toFixed(1)})`
+      );
       
-    findings.push(`- The most significant strategic factors are: ${topFactors.join(', ')}.`);
+    findings.push(`• Most significant strategic factors:\n${topFactors.join('\n')}`);
   }
   
   // Add equilibrium state if available
   if (calculationResults.equilibriumState) {
-    findings.push(`- The strategic equilibrium analysis indicates a ${calculationResults.equilibriumState} position.`);
+    findings.push(`• Strategic equilibrium analysis indicates a ${calculationResults.equilibriumState} position.`);
   }
   
   // Add risk assessment if available
   if (calculationResults.riskAssessment) {
-    findings.push(`- Risk analysis reveals ${calculationResults.riskAssessment}.`);
+    findings.push(`• Risk analysis reveals ${calculationResults.riskAssessment}.`);
   }
   
   // Add financial projection if available
   if (calculationResults.financialProjection) {
-    findings.push(`- Financial modeling projects ${calculationResults.financialProjection}.`);
+    findings.push(`• Financial modeling projects ${calculationResults.financialProjection}.`);
   }
   
-  return findings.join('\n');
+  return findings.join('\n\n');
 }
 
 /**
@@ -218,16 +484,21 @@ function formatKeyFindings(calculationResults: any): string {
  */
 function formatRecommendations(recommendations: StrategicRecommendation[]): string {
   if (!recommendations || recommendations.length === 0) {
-    return "- No specific recommendations could be generated based on the available data.";
+    return "• No specific recommendations could be generated based on the available data.";
   }
   
   return recommendations
     .map((rec, index) => {
       const confidence = Math.round(rec.confidence * 100);
-      return `${index + 1}. ${rec.title} (${confidence}% confidence)
+      const confidenceIndicator = confidence >= 70 ? "★★★" : confidence >= 50 ? "★★☆" : "★☆☆";
+      
+      return `${index + 1}. ${rec.title} [${confidenceIndicator} ${confidence}%]
    • ${rec.description}
-   • Time horizon: ${rec.timeHorizon}, Resource intensity: ${rec.resourceIntensity}
-   • Impact potential: ${rec.impact}/10`;
+   
+   • Implementation:
+     - Time horizon: ${rec.timeHorizon}
+     - Resource intensity: ${rec.resourceIntensity}
+     - Impact potential: ${rec.impact}/10`;
     })
     .join('\n\n');
 }
@@ -237,24 +508,24 @@ function formatRecommendations(recommendations: StrategicRecommendation[]): stri
  */
 function formatMethodology(explanations: any): string {
   if (!explanations) {
-    return "The analysis employed a multi-factor strategic modeling approach combining qualitative insights with quantitative assessment.";
+    return "• The analysis employed a multi-factor strategic modeling approach combining qualitative insights with quantitative assessment.";
   }
   
   const methodologyPoints = [];
   
   if (explanations.factorExtraction) {
-    methodologyPoints.push(`- Factor Extraction: ${explanations.factorExtraction}`);
+    methodologyPoints.push(`• Factor Extraction:\n  ${explanations.factorExtraction}`);
   }
   
   if (explanations.modelIntegration) {
-    methodologyPoints.push(`- Model Integration: ${explanations.modelIntegration}`);
+    methodologyPoints.push(`• Model Integration:\n  ${explanations.modelIntegration}`);
   }
   
   if (explanations.recommendationGeneration) {
-    methodologyPoints.push(`- Recommendation Generation: ${explanations.recommendationGeneration}`);
+    methodologyPoints.push(`• Recommendation Generation:\n  ${explanations.recommendationGeneration}`);
   }
   
-  return methodologyPoints.join('\n');
+  return methodologyPoints.join('\n\n');
 }
 
 /**
@@ -263,24 +534,42 @@ function formatMethodology(explanations: any): string {
 function extractFactorsFromText(text: string): any {
   console.log("Extracting factors with improved validation - ISAF V2");
   
+  // Clean and normalize input text
+  const normalizedText = text
+    .replace(/\s+/g, ' ')
+    .replace(/•/g, '* ');
+  
+  console.log("Text normalized for consistent extraction");
+  
+  // More aggressively parse PESTEL sections with improved regex patterns
+  const pestelSections = extractPESTELSections(normalizedText);
+  console.log(`Found ${Object.keys(pestelSections).length} PESTEL sections`);
+  
   // Extract PESTEL factors with enhanced cleaning
-  const pestelFactors = extractPESTELFactors(text);
+  const pestelFactors = extractPESTELFactors(normalizedText, pestelSections);
+  console.log(`Extracted ${pestelFactors.length} PESTEL factors`);
   
   // Extract Porter's Five Forces with proper naming
-  const forces = extractFiveForces(text);
+  const forces = extractFiveForces(normalizedText);
+  console.log(`Extracted ${forces.length} competitive forces`);
   
   // Extract SWOT elements with standardized categories
-  const swotElements = extractSWOTElements(text);
+  const swotElements = extractSWOTElements(normalizedText);
+  console.log(`Extracted ${swotElements.length} SWOT elements`);
   
   // Identify industry context
-  const industryContext = identifyIndustryContext(text);
+  const industryContext = identifyIndustryContext(normalizedText);
+  console.log(`Industry context identified: ${industryContext}`);
   
   // Extract financial metrics and competitors
-  const financialMetrics = extractFinancialMetrics(text);
-  const competitors = extractCompetitors(text);
+  const financialMetrics = extractFinancialMetrics(normalizedText);
+  console.log(`Extracted ${financialMetrics.length} financial metrics`);
+  
+  const competitors = extractCompetitors(normalizedText);
+  console.log(`Extracted ${competitors.length} competitors`);
   
   // Extract non-financial metrics (ESG, etc.)
-  const nonFinancialFactors = extractNonFinancialMetrics(text);
+  const nonFinancialFactors = extractNonFinancialMetrics(normalizedText);
   
   // Generate financial projections based on current metrics
   const financialProjections = generateFinancialProjections(financialMetrics, industryContext);
@@ -301,9 +590,47 @@ function extractFactorsFromText(text: string): any {
 }
 
 /**
+ * Extract PESTEL sections from text more effectively
+ */
+function extractPESTELSections(text: string): Record<string, string> {
+  const categories = ['Political', 'Economic', 'Social', 'Technological', 'Environmental', 'Legal'];
+  const sections: Record<string, string> = {};
+  
+  // First, look for PESTEL or ENVIRONMENTAL ANALYSIS section
+  let pestelSection = text;
+  const pestelSectionMatch = text.match(/ENVIRONMENTAL ANALYSIS.*?\n([\s\S]*?)(?=COMPETITIVE ASSESSMENT|ORGANIZATIONAL CAPABILITY|$)/i);
+  
+  if (pestelSectionMatch) {
+    pestelSection = pestelSectionMatch[1];
+    console.log("Found main PESTEL section");
+  }
+  
+  // Extract each category section
+  categories.forEach(category => {
+    // More robust pattern matching with multiple variations
+    const patterns = [
+      new RegExp(`${category}\\s+Factors?:?\\s*([\\s\\S]*?)(?=(?:${categories.join('|')})\\s+Factors?:?|COMPETITIVE|ORGANIZATIONAL|$)`, 'i'),
+      new RegExp(`${category}:?\\s*([\\s\\S]*?)(?=(?:${categories.join('|')}):?|COMPETITIVE|ORGANIZATIONAL|$)`, 'i'),
+      new RegExp(`${category}[^:]*?:?\\s*([\\s\\S]*?)(?=(?:${categories.join('|')})[^:]*?:?|COMPETITIVE|ORGANIZATIONAL|$)`, 'i')
+    ];
+    
+    for (const pattern of patterns) {
+      const match = pestelSection.match(pattern);
+      if (match && match[1] && match[1].trim().length > 10) {
+        sections[category] = match[1].trim();
+        console.log(`Found ${category} section with ${match[1].trim().length} characters`);
+        break;
+      }
+    }
+  });
+  
+  return sections;
+}
+
+/**
  * Extract PESTEL factors with enhanced validation to prevent generic terms
  */
-function extractPESTELFactors(text: string): PESTELFactor[] {
+function extractPESTELFactors(text: string, sections?: Record<string, string>): PESTELFactor[] {
   const categories = ['Political', 'Economic', 'Social', 'Technological', 'Environmental', 'Legal'];
   const factors: PESTELFactor[] = [];
   
@@ -311,7 +638,7 @@ function extractPESTELFactors(text: string): PESTELFactor[] {
   const invalidTerms = ['specific', 'risk', 'factor', 'u', 'trend', 'poised', 'aligned', 'benefit', 'importance', 'weight'];
   
   // Category-specific default names when parsing fails
-  const defaultNames = {
+  const defaultNames: Record<string, string> = {
     'Political': 'Policy Environment',
     'Economic': 'Market Dynamics',
     'Social': 'Demographics & Culture',
@@ -322,14 +649,21 @@ function extractPESTELFactors(text: string): PESTELFactor[] {
   
   // Process each PESTEL category
   categories.forEach(category => {
-    // Find the category section in the text
-    const categoryRegex = new RegExp(`${category}[^:]*?:[\\s\\S]*?(?=(?:${categories.join('|')}):|$)`, 'i');
-    const categoryMatch = text.match(categoryRegex);
+    // If we have pre-extracted sections, use them
+    let categoryContent = '';
+    if (sections && sections[category]) {
+      categoryContent = sections[category];
+    } else {
+      // Find the category section in the text using regex as fallback
+      const categoryRegex = new RegExp(`${category}[^:]*?:[\\s\\S]*?(?=(?:${categories.join('|')}):|$)`, 'i');
+      const categoryMatch = text.match(categoryRegex);
+      categoryContent = categoryMatch?.[0] || '';
+    }
     
-    if (categoryMatch) {
+    if (categoryContent) {
       // Extract bullet points from the section
-      const bulletRegex = /[•\-]\s*([^:.\n]+)(?::|\.)\s*([^•\-\n]*)/g;
-      const bullets = [...categoryMatch[0].matchAll(bulletRegex)];
+      const bulletRegex = /[•\-\*]\s*([^:.\n]+)(?::|\.)\s*([^•\-\*\n]*)/g;
+      const bullets = [...categoryContent.matchAll(bulletRegex)];
       
       if (bullets.length > 0) {
         bullets.forEach((bullet, index) => {
@@ -446,7 +780,7 @@ function extractKeyTerms(description: string): string | null {
  * Generate a default weight for a PESTEL category
  */
 function generateDefaultWeight(category: string): number {
-  const weights = {
+  const weights: Record<string, number> = {
     'Political': 6,
     'Economic': 8,
     'Social': 5,
@@ -455,14 +789,14 @@ function generateDefaultWeight(category: string): number {
     'Legal': 7
   };
   
-  return weights[category] || 6;
+  return weights[category as keyof typeof weights] || 6;
 }
 
 /**
  * Generate a default impact for a PESTEL category
  */
 function generateDefaultImpact(category: string): number {
-  const impacts = {
+  const impacts: Record<string, number> = {
     'Political': -1,
     'Economic': 2,
     'Social': 1,
@@ -471,7 +805,7 @@ function generateDefaultImpact(category: string): number {
     'Legal': -2
   };
   
-  return impacts[category] || 0;
+  return impacts[category as keyof typeof impacts] || 0;
 }
 
 /**
@@ -785,7 +1119,7 @@ function extractForceDescription(text: string, forceType: string): string {
   }
   
   // Default descriptions if none found
-  const defaultDescriptions = {
+  const defaultDescriptions: Record<string, string> = {
     'competitive rivalry': 'Level of competition within the industry',
     'bargaining power of suppliers': 'Ability of suppliers to influence terms and conditions',
     'bargaining power of buyers': 'Ability of customers to influence terms and conditions',
@@ -793,7 +1127,18 @@ function extractForceDescription(text: string, forceType: string): string {
     'threat of substitutes': 'Availability of alternative products or services'
   };
   
-  return defaultDescriptions[forceType] || 'Industry force affecting competitive position';
+  // Normalize the force type to match our keys
+  const normalizedForceType = forceType.toLowerCase();
+  
+  // Check if we have a direct match
+  for (const [key, value] of Object.entries(defaultDescriptions)) {
+    if (normalizedForceType.includes(key)) {
+      return value;
+    }
+  }
+  
+  // Default fallback
+  return 'Industry force affecting competitive position';
 }
 
 /**
@@ -1160,7 +1505,15 @@ function extractSection(text: string, heading: string): string | null {
 /**
  * Perform mathematical calculation with proper tensors and operators
  */
-function performCalculations(extractedFactors: any): any {
+function performCalculations(
+  extractedFactors: any, 
+  extractionStats?: { 
+    extracted: number; 
+    defaulted: number; 
+    dataQuality: number; 
+    frameworkCompleteness: Record<string, number> 
+  }
+): any {
   try {
     // Implement the proper mathematical framework based on the ISAF paper
     
@@ -1893,7 +2246,16 @@ function generateFinancialProjections(metrics: FinancialMetric[], context: strin
 /**
  * Generate strategic recommendations based on factors and calculations
  */
-function generateRecommendations(extractedFactors: any, calculationResults: any): StrategicRecommendation[] {
+function generateRecommendations(
+  extractedFactors: any, 
+  calculationResults: any,
+  extractionStats?: { 
+    extracted: number; 
+    defaulted: number; 
+    dataQuality: number; 
+    frameworkCompleteness: Record<string, number> 
+  }
+): StrategicRecommendation[] {
   // Generate data-driven recommendations based on the mathematical model results
   const recommendations: StrategicRecommendation[] = [];
   
