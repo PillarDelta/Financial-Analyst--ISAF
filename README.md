@@ -6,7 +6,7 @@ A powerful strategic analysis platform featuring advanced mathematical modeling 
 
 © 2025 Pillar Delta PC. Any redistribution or reproduction of part or all of the content in any form is prohibited. You may not, unless you have our express written permission, distribute or commercially exploit the content. This software is provided "as is" without warranty of any kind.
 
-## 📚 **Documentation**
+##  **Documentation**
 
 ### **For Users**
 - ** User Handbook](USER_HANDBOOK.md)** - Complete guide to using the platform
