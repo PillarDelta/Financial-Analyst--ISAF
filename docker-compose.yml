@@ -1,0 +1,111 @@
+# AFAS MVP Production Infrastructure
+# This adds production capabilities without affecting existing development workflow
+# Development continues on localhost:3000, production runs on different ports
+
+version: '3.8'
+
+services:
+  # PostgreSQL Database for enterprise features
+  postgres:
+    image: postgres:15-alpine
+    container_name: afas-postgres
+    environment:
+      POSTGRES_DB: afas_mvp
+      POSTGRES_USER: afas_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password_change_in_production}
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql
+    networks:
+      - afas-network
+    restart: unless-stopped
+
+  # Redis for caching and session management
+  redis:
+    image: redis:7-alpine
+    container_name: afas-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - afas-network
+    restart: unless-stopped
+    command: redis-server --appendonly yes
+
+  # AFAS MVP Application (Production)
+  afas-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: afas-app
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://afas_user:${DB_PASSWORD:-secure_password_change_in_production}@postgres:5432/afas_mvp
+      REDIS_URL: redis://redis:6379
+      OPENAI_API_KEY: ${OPENAI_API_KEY}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET:-your-secret-key-here}
+      NEXTAUTH_URL: ${NEXTAUTH_URL:-http://localhost:3001}
+    ports:
+      - "3001:3000"  # Production runs on 3001, development stays on 3000
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - afas-network
+    restart: unless-stopped
+    volumes:
+      - ./uploads:/app/uploads  # For file uploads
+      - ./logs:/app/logs        # For application logs
+
+  # Nginx Reverse Proxy (Optional - for production)
+  nginx:
+    image: nginx:alpine
+    container_name: afas-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - afas-app
+    networks:
+      - afas-network
+    restart: unless-stopped
+
+  # Database backup service
+  db-backup:
+    image: postgres:15-alpine
+    container_name: afas-backup
+    environment:
+      POSTGRES_DB: afas_mvp
+      POSTGRES_USER: afas_user
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-secure_password_change_in_production}
+    volumes:
+      - ./backups:/backups
+      - ./scripts/backup.sh:/backup.sh
+    networks:
+      - afas-network
+    depends_on:
+      - postgres
+    command: |
+      sh -c "
+        chmod +x /backup.sh &&
+        while true; do
+          sleep 86400  # Run backup daily
+          /backup.sh
+        done
+      "
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  afas-network:
+    driver: bridge 
