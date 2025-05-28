@@ -9,21 +9,21 @@ A powerful strategic analysis platform featuring advanced mathematical modeling 
 ##  **Documentation**
 
 ### **For Users**
-- ** User Handbook](USER_HANDBOOK.md)** - Complete guide to using the platform
-- ** Quick Start Guide](USER_HANDBOOK.md#quick-start-guide)** - Get started in 3 steps
-- ** Chat Interface Guide](USER_HANDBOOK.md#how-to-use-the-chat-interface)** - Learn what you can ask
-- ** Analysis Types](USER_HANDBOOK.md#types-of-analysis-available)** - ISAF, Financial, Document analysis
-- ** Troubleshooting](USER_HANDBOOK.md#troubleshooting-common-issues)** - Common issues and solutions
+-  User Handbook](USER_HANDBOOK.md)** - Complete guide to using the platform
+- Quick Start Guide](USER_HANDBOOK.md#quick-start-guide)** - Get started in 3 steps
+- Chat Interface Guide](USER_HANDBOOK.md#how-to-use-the-chat-interface)** - Learn what you can ask
+- Analysis Types](USER_HANDBOOK.md#types-of-analysis-available)** - ISAF, Financial, Document analysis
+- Troubleshooting](USER_HANDBOOK.md#troubleshooting-common-issues)** - Common issues and solutions
 
 ### **For Developers**
-- ** API Documentation](API_DOCUMENTATION.md)** - Complete API reference
-- ** Technical Documentation](DOCUMENTATION.md)** - System architecture and implementation
-- ** Installation Guide](INSTALLATION.md)** - Detailed setup instructions
-- ** Testing Guide](src/tests/)** - Test suite and validation
+- API Documentation](API_DOCUMENTATION.md)** - Complete API reference
+- Technical Documentation](DOCUMENTATION.md)** - System architecture and implementation
+- Installation Guide](INSTALLATION.md)** - Detailed setup instructions
+- Testing Guide](src/tests/)** - Test suite and validation
 
 ### **For Project Management**
-- **  MVP Completion Plan](AFAS_MVP_COMPLETION_PLAN.md)** - Contract milestone tracking
-- **  Fixes Completed](FIXES_COMPLETED.md)** - Recent improvements and fixes
+- MVP Completion Plan](AFAS_MVP_COMPLETION_PLAN.md)** - Contract milestone tracking
+- Fixes Completed](FIXES_COMPLETED.md)** - Recent improvements and fixes
 
 ---
 
