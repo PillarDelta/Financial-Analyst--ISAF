@@ -1,6 +1,6 @@
-# 🔌 API Documentation
+# API Documentation
 
-## 📋 **Overview**
+##  **Overview**
 
 The Financial Analyst Strategic Analyst Platform provides RESTful APIs for integrating advanced strategic analysis capabilities into your applications. This documentation covers all available endpoints, authentication, request/response formats, and integration examples.
 
@@ -8,7 +8,7 @@ The Financial Analyst Strategic Analyst Platform provides RESTful APIs for integ
 
 ---
 
-## 🔐 **Authentication**
+##  **Authentication**
 
 ### **Current Version (1.0)**
 - **No authentication required** for basic analysis endpoints
@@ -22,7 +22,7 @@ The Financial Analyst Strategic Analyst Platform provides RESTful APIs for integ
 
 ---
 
-## 📊 **Core Analysis Endpoints**
+##  **Core Analysis Endpoints**
 
 ### **POST /api/chat**
 
@@ -177,7 +177,7 @@ Store financial statements or calculated ratios.
 
 ---
 
-## 🧮 **Financial Analysis Integration**
+## **Financial Analysis Integration**
 
 ### **Using the Financial Analysis Engine**
 
@@ -234,7 +234,7 @@ The platform calculates 25+ financial ratios including:
 
 ---
 
-## 📄 **Document Processing**
+##  **Document Processing**
 
 ### **Supported Formats**
 
@@ -500,7 +500,7 @@ const assessDataQuality = (analysisResult) => {
 
 ---
 
-## 🔄 **Webhooks (Coming Soon)**
+##  **Webhooks (Coming Soon)**
 
 ### **Event Types**
 - `analysis.completed` - Analysis finished processing
@@ -538,7 +538,7 @@ X-RateLimit-Reset: 1641734400
 
 ---
 
-## 🧪 **Testing**
+##  **Testing**
 
 ### **Test Endpoints**
 
@@ -582,7 +582,7 @@ const testFinancialData = {
 
 ---
 
-## 📚 **SDK Development**
+##  **SDK Development**
 
 ### **JavaScript/TypeScript SDK**
 
@@ -620,7 +620,7 @@ class StrategicAnalystSDK {
 
 ---
 
-## 🔮 **Roadmap**
+##  **Roadmap**
 
 ### **Version 1.1 (Q2 2025)**
 - API key authentication
@@ -642,7 +642,7 @@ class StrategicAnalystSDK {
 
 ---
 
-## 📞 **Support**
+##  **Support**
 
 ### **API Support**
 - **Documentation**: This guide and inline API docs
@@ -656,4 +656,4 @@ class StrategicAnalystSDK {
 
 ---
 
-**🚀 Ready to integrate strategic analysis into your application? Start with the `/api/chat` endpoint and explore the possibilities!** 
+** Ready to integrate strategic analysis into your application? Start with the `/api/chat` endpoint and explore the possibilities!** 
