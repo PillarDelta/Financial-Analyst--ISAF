@@ -168,9 +168,9 @@ For more information, contact [info@pillardelta.com].
 
 The platform integrates GPT (Generative Pre-trained Transformer) with ISAF (Integrated Strategic Analysis Framework) to provide enhanced strategic analysis capabilities. This integration combines the qualitative analysis from GPT with quantitative mathematical modeling from ISAF to deliver more robust strategic recommendations.
 
-### Academic Foundation
+###  Foundation
 
-The ISAF-V2 system is based on the proprietary paper "ISAF: A Integrated Strategic Analysis Framework - Mathematical Synthesis and Computational Strategic Analysis." developed by Kyriakos Taraktis at Pillar Delta. This groundbreaking paper introduces a mathematical formalism that combines traditional qualitative business frameworks (PESTEL, Porter's Five Forces, SWOT) into a unified quantitative model using tensor mathematics.
+The ISAF-V2 system is based on the proprietary paper "ISAF: A Integrated Strategic Analysis Framework - Mathematical Synthesis and Computational Strategic Analysis." developed ( Taraktis et Al  at Pillar Delta) The  paper introduces a mathematical formalism that combines traditional qualitative business frameworks (PESTEL, Porter's Five Forces, SWOT) into a unified quantitative model using tensor mathematics.
 
 Key elements from the paper that we've implemented:
 
