@@ -1,7 +1,7 @@
-# AFAS MVP Production Infrastructure
+# Strategic  Analyst ISAF MVP Production Infrastructure
 # This adds production capabilities without affecting existing development workflow
 # Development continues on localhost:3000, production runs on different ports
-
+# © Pillar Delta PC 2025
 version: '3.8'
 
 services:

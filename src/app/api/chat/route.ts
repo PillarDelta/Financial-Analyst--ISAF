@@ -1,9 +1,10 @@
 import { OpenAI } from 'openai'
 import { type ChatCompletionMessageParam } from 'openai/resources/chat/completions'
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { loadPrompt, loadAnalysisTypePrompt } from '@/utils/promptLoader'
 import { formatOutput } from '@/utils/formatOutput'
 import { processWithISAFV2 } from '@/utils/ISAF-V2'
+import { licenseMiddleware, middlewareConfigs } from '@/middleware/licenseMiddleware'
 
 // Initialize OpenAI client
 const getOpenAIClient = () => {
@@ -27,7 +28,18 @@ try {
   // We'll handle this when processing requests
 }
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  // Check if licensing is enabled
+  const licensingEnabled = process.env.ENABLE_LICENSING === 'true';
+  
+  if (licensingEnabled) {
+    // Validate license for analysis requests
+    const licenseCheck = await licenseMiddleware(req, middlewareConfigs.analysis);
+    if (licenseCheck) {
+      return licenseCheck; // Return license error response
+    }
+  }
+
   try {
     // If OpenAI client isn't initialized, try initializing it now
     if (!openai) {
@@ -212,7 +224,24 @@ Structure your final response as an ISAF strategic analysis that directly answer
         cleanContent = formatOutput(cleanContent, analysisType);
       }
       
-      return NextResponse.json({ content: cleanContent })
+      // Add license usage info to response if licensing is enabled
+      const responseData: any = { content: cleanContent };
+      
+      if (licensingEnabled) {
+        const licenseKey = req.headers.get('X-License-Key') || 
+                          req.headers.get('Authorization')?.replace('Bearer ', '');
+        
+        if (licenseKey) {
+          responseData.licenseInfo = {
+            remainingAnalyses: req.headers.get('X-Remaining-Analyses'),
+            remainingDocuments: req.headers.get('X-Remaining-Documents'),
+            remainingApiCalls: req.headers.get('X-Remaining-API-Calls'),
+            plan: req.headers.get('X-License-Plan')
+          };
+        }
+      }
+      
+      return NextResponse.json(responseData)
     } catch (error: any) {
       // Handle OpenAI API errors
       console.error('OpenAI API error:', error)

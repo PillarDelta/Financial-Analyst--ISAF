@@ -1,9 +1,10 @@
 /**
  * ISAF-V2.ts - Integrated Strategic Analysis Framework Version 2
- * 
+
  * This module contains an improved implementation of the Integrated Strategic Analysis Framework
  * with fixed mathematical calculations, properly formatted outputs, and comprehensive recommendations.
- */
+ *  © Pillar Delta PC 2025
+*/
 
 // ========== Type Definitions ==========
 

@@ -63,7 +63,7 @@ async function testIsafApi() {
         throw new Error(`API request failed with status: ${response.status}`);
       }
       
-      const data = await response.json();
+      const data = await response.json() as { content: string };
       const content = data.content;
       
       // Display info about the response
