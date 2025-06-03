@@ -1,4 +1,4 @@
-# 🔌 API Documentation
+#  API Documentation
 
 ##  **Overview**
 
@@ -77,7 +77,7 @@ curl -X POST http://localhost:3000/api/chat \
 
 ---
 
-## 🏢 **Enterprise Endpoints**
+##  **Enterprise Endpoints**
 
 ### **GET /api/companies**
 
@@ -281,7 +281,7 @@ const analyzeDocument = async (file) => {
 
 ---
 
-## 🔧 **Error Handling**
+##  **Error Handling**
 
 ### **HTTP Status Codes**
 
@@ -332,7 +332,7 @@ const analyzeDocument = async (file) => {
 
 ---
 
-## 🚀 **Integration Examples**
+##  **Integration Examples**
 
 ### **React/Next.js Integration**
 
@@ -454,7 +454,7 @@ print(analysis)
 
 ---
 
-## 📊 **Data Validation**
+##  **Data Validation**
 
 ### **Input Validation**
 
@@ -500,7 +500,7 @@ const assessDataQuality = (analysisResult) => {
 
 ---
 
-## 🔄 **Webhooks (Coming Soon)**
+##  **Webhooks (Coming Soon)**
 
 ### **Event Types**
 - `analysis.completed` - Analysis finished processing
@@ -523,7 +523,7 @@ const assessDataQuality = (analysisResult) => {
 
 ---
 
-## 📈 **Rate Limits**
+##  **Rate Limits**
 
 ### **Current Limits**
 - **Development**: No limits
@@ -538,7 +538,7 @@ X-RateLimit-Reset: 1641734400
 
 ---
 
-## 🧪 **Testing**
+##  **Testing**
 
 ### **Test Endpoints**
 
@@ -582,7 +582,7 @@ const testFinancialData = {
 
 ---
 
-## 📚 **SDK Development**
+##  **SDK Development**
 
 ### **JavaScript/TypeScript SDK**
 
@@ -642,7 +642,7 @@ class StrategicAnalystSDK {
 
 ---
 
-## 📞 **Support**
+##  **Support**
 
 ### **API Support**
 - **Documentation**: This guide and inline API docs
@@ -656,4 +656,4 @@ class StrategicAnalystSDK {
 
 ---
 
-**🚀 Ready to integrate strategic analysis into your application? Start with the `/api/chat` endpoint and explore the possibilities!** 
+** Ready to integrate strategic analysis into your application? Start with the `/api/chat` endpoint and explore the possibilities!** 

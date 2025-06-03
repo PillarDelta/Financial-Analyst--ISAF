@@ -29,7 +29,7 @@ The Strategic Fit Score is calculated using:
 
 ---
 
-## 📊 **Data Quality Assessment**
+##  **Data Quality Assessment**
 
 ### Framework Completeness Percentages
 
@@ -62,7 +62,7 @@ This number shows how many strategic factors the system identified in your input
 
 ---
 
-## ⭐ **Confidence Levels**
+##  **Confidence Levels**
 
 ### Three-Tier Confidence System
 
@@ -93,7 +93,7 @@ This number shows how many strategic factors the system identified in your input
 
 ---
 
-## 🔍 **Key Findings - Impact Scores**
+##  **Key Findings - Impact Scores**
 
 ### Factor Impact Scores (0.0-10.0)
 

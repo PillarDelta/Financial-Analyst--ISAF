@@ -26,7 +26,7 @@ The Strategic Analyst Platform is your comprehensive business analysis companion
 
 ---
 
-## 💬 **How to Use the Chat Interface**
+##  **How to Use the Chat Interface**
 
 ### **What You Can Ask**
 
@@ -101,13 +101,13 @@ ISAF-V2 (Integrated Strategic Analysis Framework Version 2) is our proprietary A
 - **Below 40%**: Significant strategic issues needing immediate action
 
 #### **Confidence Levels**
-- **High Confidence** ⭐⭐⭐: Based on comprehensive data and clear patterns
-- **Medium Confidence** ⭐⭐: Based on good data with some uncertainties
-- **Indicative** ⭐: Based on limited data, directional insights only
+- **High Confidence** : Based on comprehensive data and clear patterns
+- **Medium Confidence** : Based on good data with some uncertainties
+- **Indicative** : Based on limited data, directional insights only
 
 ---
 
-## 📊 **Types of Analysis Available**
+##  **Types of Analysis Available**
 
 ### **1. ISAF Strategic Analysis**
 
@@ -159,7 +159,7 @@ ISAF-V2 (Integrated Strategic Analysis Framework Version 2) is our proprietary A
 
 ---
 
-## 🎨 **Platform Features**
+##  **Platform Features**
 
 ### **Chat Interface**
 - **Real-time Analysis**: Get instant strategic insights
@@ -181,7 +181,7 @@ ISAF-V2 (Integrated Strategic Analysis Framework Version 2) is our proprietary A
 
 ---
 
-## 📈 **Best Practices for Better Results**
+##  **Best Practices for Better Results**
 
 ### **Input Quality Tips**
 
@@ -213,7 +213,7 @@ ISAF-V2 (Integrated Strategic Analysis Framework Version 2) is our proprietary A
 
 ---
 
-## 🔧 **Troubleshooting Common Issues**
+##  **Troubleshooting Common Issues**
 
 ### **Analysis Quality Issues**
 
@@ -256,7 +256,7 @@ ISAF-V2 (Integrated Strategic Analysis Framework Version 2) is our proprietary A
 
 ---
 
-## 📋 **Sample Analysis Workflows**
+##  **Sample Analysis Workflows**
 
 ### **Workflow 1: Company Strategic Assessment**
 
@@ -408,7 +408,7 @@ You can build comprehensive insights by:
 
 ---
 
-## 📞 **Contact Information**
+##  **Contact Information**
 
 **Project**: Strategic Analyst Platform
 **Developer**: Pillar Delta PC
@@ -439,4 +439,4 @@ You can build comprehensive insights by:
 
 ---
 
-**🚀 Ready to start your strategic analysis journey? Begin by asking a question or uploading a document in the chat interface!** 
+** Ready to start your strategic analysis journey? Begin by asking a question or uploading a document in the chat interface!** 

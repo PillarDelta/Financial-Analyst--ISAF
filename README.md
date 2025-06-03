@@ -6,24 +6,24 @@ A powerful strategic analysis platform featuring advanced mathematical modeling 
 
 © 2025 Pillar Delta PC. Any redistribution or reproduction of part or all of the content in any form is prohibited. You may not, unless you have our express written permission, distribute or commercially exploit the content. This software is provided "as is" without warranty of any kind.
 
-## 📚 **Documentation**
+##  **Documentation**
 
 ### **For Users**
-- **[📖 User Handbook](USER_HANDBOOK.md)** - Complete guide to using the platform
-- **[🚀 Quick Start Guide](USER_HANDBOOK.md#quick-start-guide)** - Get started in 3 steps
-- **[💬 Chat Interface Guide](USER_HANDBOOK.md#how-to-use-the-chat-interface)** - Learn what you can ask
-- **[📊 Analysis Types](USER_HANDBOOK.md#types-of-analysis-available)** - ISAF, Financial, Document analysis
-- **[🔧 Troubleshooting](USER_HANDBOOK.md#troubleshooting-common-issues)** - Common issues and solutions
+- **[ User Handbook](USER_HANDBOOK.md)** - Complete guide to using the platform
+- **[ Quick Start Guide](USER_HANDBOOK.md#quick-start-guide)** - Get started in 3 steps
+- **[ Chat Interface Guide](USER_HANDBOOK.md#how-to-use-the-chat-interface)** - Learn what you can ask
+- **[ Analysis Types](USER_HANDBOOK.md#types-of-analysis-available)** - ISAF, Financial, Document analysis
+- **[ Troubleshooting](USER_HANDBOOK.md#troubleshooting-common-issues)** - Common issues and solutions
 
 ### **For Developers**
-- **[🔌 API Documentation](API_DOCUMENTATION.md)** - Complete API reference
-- **[⚙️ Technical Documentation](DOCUMENTATION.md)** - System architecture and implementation
-- **[🛠️ Installation Guide](INSTALLATION.md)** - Detailed setup instructions
-- **[🧪 Testing Guide](src/tests/)** - Test suite and validation
+- **[ API Documentation](API_DOCUMENTATION.md)** - Complete API reference
+- **[ Technical Documentation](DOCUMENTATION.md)** - System architecture and implementation
+- **[🛠 Installation Guide](INSTALLATION.md)** - Detailed setup instructions
+- **[ Testing Guide](src/tests/)** - Test suite and validation
 
 ### **For Project Management**
-- **[📋 MVP Completion Plan](AFAS_MVP_COMPLETION_PLAN.md)** - Contract milestone tracking
-- **[✅ Fixes Completed](FIXES_COMPLETED.md)** - Recent improvements and fixes
+- **[ MVP Completion Plan](AFAS_MVP_COMPLETION_PLAN.md)** - Contract milestone tracking
+- **[ Fixes Completed](FIXES_COMPLETED.md)** - Recent improvements and fixes
 
 ---
 
@@ -71,7 +71,7 @@ The application will be available at [http://localhost:3000](http://localhost:30
 
 For more detailed installation instructions and troubleshooting, see [INSTALLATION.md](INSTALLATION.md).
 
-## 🎯 **Quick Start**
+##  **Quick Start**
 
 1. **Access the Platform**: Open `http://localhost:3000` in your browser
 2. **Ask a Question**: Type a strategic question like "Analyze Tesla's competitive position"
