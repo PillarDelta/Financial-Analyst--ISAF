@@ -266,5 +266,5 @@ Strategic Recommendations:
      - Impact potential: 10/10
 ```
 
-This professional formatting makes the output more readable and emphasizes the key information needed for strategic decision-making.
-### © Pillar Delta PC 2ß25
+This professional formatting makes the output more readable and emphasizes the key information needed for strategic decision-making. - © Pillar Delta PC 2ß25 -
+
