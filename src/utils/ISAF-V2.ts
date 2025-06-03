@@ -224,9 +224,7 @@ function formatOutputWithConfidence(
   // Handle error cases
   if (calculationResults.error) {
     return `
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃              STRATEGIC ANALYSIS (LIMITED)         ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+STRATEGIC ANALYSIS (LIMITED)
 
 Our strategic analysis system encountered an issue while processing your data.
 
@@ -257,9 +255,7 @@ Technical details: ${calculationResults.errorMessage}
   
   // Format successful analysis with data confidence indicators and contextual information
   return `
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃              STRATEGIC ANALYSIS REPORT            ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+STRATEGIC ANALYSIS REPORT
 
 Executive Summary:
 - The analysis identified key strategic factors across environmental, competitive, and 

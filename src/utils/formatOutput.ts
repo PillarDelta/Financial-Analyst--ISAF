@@ -1,93 +1,71 @@
 /**
- * Format the output content based on the analysis type
+ * Format the output content to be professional and clean
+ * Removes all markdown symbols, emojis, and unprofessional formatting
  */
 export function formatOutput(content: string, analysisType?: string): string {
   if (!content) return '';
   
-  // If it's an ISAF analysis, check if it's a question response
-  if (analysisType === 'isaf') {
-    // Check if this is a response to a direct question
-    if (content.includes('QUESTION ANALYSIS') || content.includes('DIRECT ANSWER:') || content.toLowerCase().includes('the question asks')) {
-      console.log('Detected question-focused ISAF output, applying focused formatting');
-      return formatQuestionFocusedISAF(content);
-    }
-    
-    // Otherwise use standard ISAF formatting
-    return formatISAF(content);
-  }
-  
-  // For other analysis types, apply their specific formatting
-  return content;
+  // Apply professional formatting to all content
+  return formatProfessional(content);
 }
 
 /**
- * Format ISAF-specific output with proper structure
+ * Format content to be professional and clean
  */
-function formatISAF(content: string): string {
-  // Format ISAF-specific output with proper structure
-  const sections = [
-    { title: 'EXECUTIVE SUMMARY', emoji: '📊' },
-    { title: 'ENVIRONMENTAL ANALYSIS', emoji: '🌐' },
-    { title: 'COMPETITIVE ASSESSMENT', emoji: '🏆' },
-    { title: 'ORGANIZATIONAL CAPABILITY', emoji: '🏢' },
-    { title: 'STRATEGIC RECOMMENDATIONS', emoji: '🎯' }
-  ];
-  
+function formatProfessional(content: string): string {
   let formatted = content;
   
-  // Format section headers
-  sections.forEach(section => {
-    const pattern = new RegExp(`(${section.title}|${section.title.toUpperCase()})`, 'g');
-    formatted = formatted.replace(pattern, `\n\n${section.emoji} **${section.title}**`);
-  });
+  // Remove all emojis
+  formatted = formatted.replace(/[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/gu, '');
   
-  // Format sub-headers
-  const subheaderPattern = /([A-Z][A-Z\s]{2,}:)/g;
-  formatted = formatted.replace(subheaderPattern, '\n\n**$1**');
+  // Remove markdown symbols
+  formatted = formatted.replace(/\*\*([^*]+)\*\*/g, '$1'); // Remove bold markdown
+  formatted = formatted.replace(/\*([^*]+)\*/g, '$1'); // Remove italic markdown
+  formatted = formatted.replace(/#{1,6}\s+/g, ''); // Remove header markdown
+  formatted = formatted.replace(/---+/g, ''); // Remove horizontal rules
+  formatted = formatted.replace(/```[^`]*```/g, ''); // Remove code blocks
+  formatted = formatted.replace(/`([^`]+)`/g, '$1'); // Remove inline code
   
-  // Format bullet points
-  const bulletPattern = /•\s/g;
-  formatted = formatted.replace(bulletPattern, '• ');
+  // Clean up section headers and make them professional
+  formatted = formatted.replace(/EXECUTIVE SUMMARY/gi, 'EXECUTIVE SUMMARY');
+  formatted = formatted.replace(/STRATEGIC RECOMMENDATIONS/gi, 'STRATEGIC RECOMMENDATIONS');
+  formatted = formatted.replace(/COMPANY PROFILE/gi, 'COMPANY PROFILE');
+  formatted = formatted.replace(/FINANCIAL ANALYSIS/gi, 'FINANCIAL ANALYSIS');
+  formatted = formatted.replace(/COMPETITIVE ASSESSMENT/gi, 'COMPETITIVE ASSESSMENT');
+  formatted = formatted.replace(/IMPLEMENTATION PLAN/gi, 'IMPLEMENTATION PLAN');
+  
+  // Replace bullet points with professional formatting
+  formatted = formatted.replace(/^[\s]*[•·▪▫-]\s+/gm, '  - ');
+  
+  // Clean up excessive whitespace
+  formatted = formatted.replace(/\n{3,}/g, '\n\n'); // Max 2 consecutive newlines
+  formatted = formatted.replace(/[ \t]{2,}/g, ' '); // Multiple spaces to single space
+  formatted = formatted.replace(/^\s+|\s+$/g, ''); // Trim leading/trailing whitespace
+  
+  // Remove any remaining special characters that look unprofessional
+  formatted = formatted.replace(/[→←↑↓↔⇒⇐⇑⇓⇔]/g, '->'); // Replace arrows
+  formatted = formatted.replace(/[✓✗✘❌✅]/g, ''); // Remove checkmarks
+  formatted = formatted.replace(/[🔍🎯📊🏢⚖️🤖🧮]/g, ''); // Remove any remaining business emojis
   
   return formatted;
 }
 
 /**
- * Format question-focused ISAF output to emphasize direct answers
+ * Legacy function for ISAF formatting - now applies professional formatting
+ */
+function formatISAF(content: string): string {
+  return formatProfessional(content);
+}
+
+/**
+ * Legacy function for question-focused formatting - now applies professional formatting
  */
 function formatQuestionFocusedISAF(content: string): string {
-  // Start with basic ISAF formatting
-  let formatted = formatISAF(content);
-  
-  // Add special emphasis to direct answers and impacts
-  const answerPatterns = [
-    { pattern: /(DIRECT ANSWER:[\s\S]*?)(?=\n\n|\n\*\*|$)/i, prefix: '\n\n🔍 **ANSWER:**\n' },
-    { pattern: /(IMPACT ANALYSIS:[\s\S]*?)(?=\n\n|\n\*\*|$)/i, prefix: '\n\n💼 **IMPACT ANALYSIS:**\n' },
-    { pattern: /(KEY STRATEGIC IMPLICATIONS:[\s\S]*?)(?=\n\n|\n\*\*|$)/i, prefix: '\n\n🔑 **KEY STRATEGIC IMPLICATIONS:**\n' },
-    { pattern: /(CONCLUSION:[\s\S]*?)(?=\n\n|\n\*\*|$)/i, prefix: '\n\n📝 **CONCLUSION:**\n' }
-  ];
-  
-  for (const { pattern, prefix } of answerPatterns) {
-    const match = formatted.match(pattern);
-    if (match && match[1]) {
-      const content = match[1].replace(/DIRECT ANSWER:|IMPACT ANALYSIS:|KEY STRATEGIC IMPLICATIONS:|CONCLUSION:/i, '').trim();
-      formatted = formatted.replace(match[0], `${prefix}${content}`);
-    }
-  }
-  
-  // Look for question-focused content in the output
-  if (formatted.match(/the question asks|regarding the question|to answer this question/i)) {
-    const questionFocusedContent = extractQuestionFocusedContent(content);
-    if (questionFocusedContent) {
-      formatted = `\n\n📌 **STRATEGIC ANSWER:**\n${questionFocusedContent}\n\n${formatted}`;
-    }
-  }
-  
-  return formatted;
+  return formatProfessional(content);
 }
 
 /**
- * Extract the most question-focused content from an ISAF analysis
+ * Extract the most question-focused content without unprofessional formatting
  */
 function extractQuestionFocusedContent(content: string): string | null {
   // Pattern matching for direct answers to questions
@@ -102,7 +80,7 @@ function extractQuestionFocusedContent(content: string): string | null {
   for (const pattern of patterns) {
     const match = content.match(pattern);
     if (match && match[1]) {
-      return match[1].trim();
+      return formatProfessional(match[1].trim());
     }
   }
   

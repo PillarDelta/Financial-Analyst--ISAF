@@ -20,7 +20,7 @@ interface DocumentInfo {
 // Update the Message type in useChat.ts
 type ExtendedMessage = {
   id: string
-  content: string
+  content?: string
   type: 'user' | 'assistant'
   timestamp: Date
   documents?: DocumentInfo[]
@@ -92,56 +92,151 @@ export default function Home() {
 
   const renderMessage = (message: ExtendedMessage) => {
     if (message.type === 'assistant') {
-      // Check if this is an ISAF strategic analysis
-      if (message.content.includes('┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓')) {
-        // This is a formatted ISAF report
+      // Check if this is an Enterprise Strategic Analysis Report or ISAF report
+      if (message.content && (message.content.includes('Enterprise Strategic Analysis Report') || 
+                              message.content.includes('STRATEGIC ANALYSIS REPORT') || 
+                              message.content.includes('ISAF-V3 STRATEGIC ANALYSIS'))) {
+        // This is a formatted ISAF/Enterprise report
         return (
-          <div className="space-y-4 font-mono">
+          <div className="space-y-6 font-mono">
             {message.content.split('\n').map((line: string, i: number) => {
-              // Specially styled header box
-              if (line.includes('┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓') ||
-                  line.includes('┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛') ||
-                  line.includes('┃')) {
+              // Main report title
+              if (line.trim() === 'Enterprise Strategic Analysis Report' || 
+                  line.trim() === 'STRATEGIC ANALYSIS REPORT' || 
+                  line.trim() === 'ISAF-V3 STRATEGIC ANALYSIS') {
                 return (
-                  <div key={i} className="text-[var(--blue-accent)] text-sm">
-                    {line}
+                  <div key={i} className="bg-gradient-to-r from-[var(--blue-accent)] to-[rgba(0,87,255,0.7)] text-white p-6 rounded-lg text-center mb-8">
+                    <h1 className="text-2xl font-bold tracking-wide">
+                      {line.trim()}
+                    </h1>
                   </div>
                 )
               }
               
-              // Section headers
-              if (line.trim() === 'Executive Summary:' || 
+              // Company name and subtitle lines
+              if (line.trim().includes('Real Mathematical Framework') || 
+                  line.trim().includes('Deterministic Results') ||
+                  line.trim().startsWith('Company:') ||
+                  line.trim().startsWith('Strategic Score:')) {
+                return (
+                  <div key={i} className="text-[var(--blue-accent)] text-center text-sm font-medium mb-4 opacity-80">
+                    {line.trim()}
+                  </div>
+                )
+              }
+              
+              // Enhanced section headers with better spacing
+              if (line.trim() === 'EXECUTIVE SUMMARY' ||
+                  line.trim() === 'Executive Summary:' || 
+                  line.trim() === 'Score Transparency & Methodology' ||
                   line.trim() === 'Data Quality Assessment:' ||
                   line.trim() === 'Context Analysis:' ||
                   line.trim() === 'Key Findings:' ||
+                  line.trim() === 'Company-Specific Strategic Recommendations' ||
                   line.trim() === 'Strategic Recommendations:' ||
-                  line.trim() === 'Methodology:') {
+                  line.trim() === 'Financial Impact Summary' ||
+                  line.trim() === 'Strategic Action Plan' ||
+                  line.trim() === 'Strategic Analysis Validation' ||
+                  line.trim() === 'Methodology:' ||
+                  line.trim() === 'FRAMEWORK SCORES (Deterministic):' ||
+                  line.trim() === 'DOMINANT FACTORS:' ||
+                  line.trim() === 'MATHEMATICAL METHODOLOGY:') {
                 return (
-                  <div key={i} className="text-[var(--blue-accent)] font-semibold mt-6 mb-2">
+                  <div key={i} className="bg-[var(--blue-accent)] text-white px-4 py-3 rounded-lg font-bold text-lg mt-8 mb-4">
+                    {line.trim()}
+                  </div>
+                )
+              }
+              
+              // Special styling for company name/analysis subject
+              if (line.trim().startsWith('Analysis Subject:') ||
+                  line.trim().startsWith('Company:') ||
+                  line.trim().startsWith('Link to ')) {
+                return (
+                  <div key={i} className="text-[var(--blue-accent)] font-semibold text-lg mb-4 bg-[rgba(0,87,255,0.1)] p-3 rounded border-l-4 border-[var(--blue-accent)]">
+                    {line.trim()}
+                  </div>
+                )
+              }
+              
+              // Enhanced section dividers
+              if (line.includes('───────────────────────────────────────────────────────') ||
+                  line.includes('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━')) {
+                return (
+                  <div key={i} className="my-8">
+                    <hr className="border-[var(--blue-accent)] border-t-2 opacity-30" />
+                  </div>
+                )
+              }
+              
+              // Handle recommendation titles with confidence indicators and NPV/IRR
+              if (/^\d+\.\s+.*(\[.*%.*\]|NPV:.*IRR:)/.test(line)) {
+                return (
+                  <div key={i} className="text-[var(--text-primary)] font-semibold mt-6 mb-3 bg-[rgba(0,87,255,0.05)] p-4 rounded-lg border-l-4 border-[var(--blue-accent)]">
                     {line}
                   </div>
                 )
               }
               
-              // Section dividers
-              if (line.includes('───────────────────────────────────────────────────────')) {
+              // Special styling for scores and metrics
+              if (line.trim().includes('INTEGRATED STRATEGIC SCORE:') || 
+                  line.trim().includes('Strategic Score:') ||
+                  line.trim().includes('Integrated Strategic Score:') ||
+                  line.trim().includes('Total Portfolio Value:') ||
+                  line.trim().includes('Combined NPV:')) {
                 return (
-                  <hr key={i} className="border-[var(--border-color)] my-2" />
+                  <div key={i} className="text-[var(--blue-accent)] font-bold text-xl my-4 bg-[rgba(0,87,255,0.1)] p-4 rounded-lg text-center">
+                    {line.trim()}
+                  </div>
                 )
               }
               
-              // Handle recommendation titles with confidence indicators
-              if (/^\d+\.\s+.*\[★+☆*\s+\d+%\]/.test(line)) {
+              // Component Breakdown section styling
+              if (line.trim() === 'Component Breakdown:' ||
+                  line.trim() === 'Business Calibration Applied:' ||
+                  line.trim() === 'Industry Benchmarking:' ||
+                  line.trim() === 'Confidence Intervals (95%):') {
                 return (
-                  <div key={i} className="text-[var(--text-primary)] font-semibold mt-4">
+                  <div key={i} className="text-[var(--blue-accent)] font-semibold text-lg mt-6 mb-3">
+                    {line.trim()}
+                  </div>
+                )
+              }
+              
+              // Add spacing before bullet points and sub-sections
+              if (line.trim().match(/^[•\-]\s+/) || line.trim().match(/^\*\s+/)) {
+                return (
+                  <div key={i} className="text-[var(--text-primary)] text-sm whitespace-pre-wrap ml-6 my-2 leading-relaxed">
                     {line}
                   </div>
                 )
               }
               
-              // Regular lines
+              // Numbered items (for factors, recommendations, etc.)
+              if (/^\d+\.\s+/.test(line.trim()) && !line.includes('[') && !line.includes('NPV:')) {
+                return (
+                  <div key={i} className="text-[var(--text-primary)] font-medium mt-3 mb-2 ml-4">
+                    {line}
+                  </div>
+                )
+              }
+              
+              // Action items and implementation details
+              if (line.trim().startsWith('Action:') ||
+                  line.trim().startsWith('Owner:') ||
+                  line.trim().startsWith('Deadline:') ||
+                  line.trim().startsWith('Investment:') ||
+                  line.trim().startsWith('Expected Outcome:')) {
+                return (
+                  <div key={i} className="text-[var(--text-primary)] text-sm ml-8 my-1 opacity-90">
+                    {line}
+                  </div>
+                )
+              }
+              
+              // Regular lines with better spacing
               return (
-                <div key={i} className="text-[var(--text-primary)] text-sm whitespace-pre-wrap">
+                <div key={i} className="text-[var(--text-primary)] text-sm whitespace-pre-wrap leading-relaxed">
                   {line}
                 </div>
               )
@@ -153,7 +248,7 @@ export default function Home() {
       // Default handling for non-ISAF content
       return (
         <div className="space-y-12">
-          {message.content.split('\n\n').map((paragraph: string, i: number) => {
+          {(message.content || '').split('\n\n').map((paragraph: string, i: number) => {
             // Main headers (CONTEXT SUMMARY, DIFS ANALYSIS)
             if (paragraph.match(/^[A-Z][A-Z\s]+$/)) {
               return (
@@ -192,7 +287,7 @@ export default function Home() {
     // User messages
     return (
       <div className="text-[var(--text-primary)] text-base font-light">
-        {message.content}
+        {message.content || ''}
       </div>
     )
   }

@@ -125,7 +125,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       
       const assistantMessage: Message = {
         id: (Date.now() + 1).toString(),
-        content: data.content,
+        content: data.response,
         type: 'assistant',
         timestamp: new Date()
       }
@@ -160,17 +160,24 @@ export function ChatProvider({ children }: { children: ReactNode }) {
     try {
       console.log('Analyzing document:', { content, imageUrl, analysisType })
       
+      // Check if content is empty or just whitespace/newlines
+      const cleanContent = content?.trim() || ''
+      
+      if (!cleanContent && !imageUrl) {
+        throw new Error('Document appears to be empty or text extraction failed. This may be a scanned/image-based PDF. Please try uploading as an image for analysis.')
+      }
+      
       // Prepare prompt based on analysisType
       let promptText = '';
       
       if (analysisType === 'isaf') {
         promptText = imageUrl 
           ? 'Please perform an ISAF strategic analysis on this image. Identify all visible business factors and metrics for strategic analysis.'
-          : `Please perform an ISAF strategic analysis on this document. Extract all business factors for strategic analysis: ${content}`
+          : `Please perform an ISAF strategic analysis on this document. Extract all business factors for strategic analysis: ${cleanContent}`
       } else {
         promptText = imageUrl 
           ? 'Please analyze this image and describe what you see.'
-          : `Please analyze this document and provide key insights: ${content}`
+          : `Please analyze this document and provide key insights: ${cleanContent}`
       }
       
       const response = await fetch('/api/chat', {
@@ -180,7 +187,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           content: promptText,
           analysisType,
           documents: [{
-            content,
+            content: cleanContent,
             imageUrl
           }]
         })
@@ -217,7 +224,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       
       const analysisMessage: Message = {
         id: generateUniqueId(),
-        content: data.content,
+        content: data.response,
         type: 'assistant',
         timestamp: new Date()
       }
@@ -254,7 +261,16 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       }
       
       setIsProcessingFile(true)
+      console.log('Starting file processing for:', file.name, 'Type:', file.type, 'Size:', file.size)
+      
       const processedContent = await processDocument(file)
+      console.log('File processed successfully. Content length:', processedContent.content?.length || 0)
+      console.log('Has imageUrl:', !!processedContent.imageUrl)
+      
+      // Log first 100 characters of content for debugging
+      if (processedContent.content) {
+        console.log('Content preview:', processedContent.content.substring(0, 100))
+      }
       
       // Create upload message with image if present
       const uploadMessage: Message = {
@@ -266,7 +282,7 @@ export function ChatProvider({ children }: { children: ReactNode }) {
           name: file.name,
           type: file.type,
           content: processedContent.content,
-          imageUrl: (processedContent as any).imageUrl
+          imageUrl: processedContent.imageUrl
         }]
       }
       
@@ -275,18 +291,32 @@ export function ChatProvider({ children }: { children: ReactNode }) {
       // Send for analysis immediately
       await analyzeDocument(
         processedContent.content,
-        (processedContent as any).imageUrl
+        processedContent.imageUrl
       )
 
     } catch (error) {
       console.error('Upload failed:', error)
-      const errorMessage: Message = {
+      
+      // Provide more specific error messages based on the error type
+      let errorMessage = `Failed to process ${file.name}.`
+      
+      if (error instanceof Error) {
+        if (error.message.includes('extractable text')) {
+          errorMessage = `${file.name} appears to be a scanned or image-based PDF. Please try uploading it as an image (PNG/JPG) for analysis instead.`
+        } else if (error.message.includes('Invalid PDF')) {
+          errorMessage = `${file.name} appears to be corrupted or not a valid PDF file. Please try a different file.`
+        } else {
+          errorMessage += ` ${error.message}`
+        }
+      }
+      
+      const errorMessage_obj: Message = {
         id: generateUniqueId(),
-        content: `Failed to process ${file.name}. Please try again.`,
+        content: errorMessage,
         type: 'assistant',
         timestamp: new Date()
       }
-      setMessages(prev => [...prev, errorMessage])
+      setMessages(prev => [...prev, errorMessage_obj])
     } finally {
       setIsProcessingFile(false)
     }

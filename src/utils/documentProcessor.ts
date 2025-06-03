@@ -13,6 +13,7 @@ export type SupportedFileType = 'pdf' | 'docx' | 'txt' | 'csv' | 'xlsx' | 'image
 export async function processDocument(file: File): Promise<{
   content: string;
   type: SupportedFileType;
+  imageUrl?: string;
 }> {
   try {
     const fileType = getFileType(file)
@@ -100,17 +101,80 @@ async function processText(file: File) {
 
 async function processPdf(file: File) {
   try {
+    console.log('Processing PDF:', file.name, 'Size:', file.size)
     const arrayBuffer = await file.arrayBuffer()
+    console.log('ArrayBuffer created, size:', arrayBuffer.byteLength)
+    
     const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise
     const numPages = pdf.numPages
+    console.log('PDF loaded successfully. Number of pages:', numPages)
+    
     let fullText = ''
 
     // Extract text from all pages
     for (let i = 1; i <= numPages; i++) {
-      const page = await pdf.getPage(i)
-      const content = await page.getTextContent()
-      const text = content.items.map((item: any) => item.str).join(' ')
-      fullText += text + '\n'
+      try {
+        console.log(`Processing page ${i}/${numPages}`)
+        const page = await pdf.getPage(i)
+        const content = await page.getTextContent()
+        
+        // More robust text extraction
+        const pageText = content.items
+          .filter((item: any) => item.str && item.str.trim().length > 0)
+          .map((item: any) => item.str)
+          .join(' ')
+        
+        if (pageText.trim().length > 0) {
+          fullText += pageText + '\n'
+          console.log(`Page ${i} extracted ${pageText.length} characters`)
+        } else {
+          console.log(`Page ${i} appears to be empty or image-only`)
+        }
+      } catch (pageError) {
+        console.error(`Error processing page ${i}:`, pageError)
+        // Continue with other pages
+        continue
+      }
+    }
+
+    console.log('Total extracted text length:', fullText.length)
+    console.log('First 200 characters:', fullText.substring(0, 200))
+
+    // If no text was extracted, convert first page to image for OCR
+    if (fullText.trim().length === 0) {
+      console.warn('No text extracted from PDF - attempting image conversion for OCR')
+      
+      try {
+        // Convert first page to image
+        const page = await pdf.getPage(1)
+        const viewport = page.getViewport({ scale: 2.0 }) // Higher resolution for better OCR
+        
+        // Create canvas
+        const canvas = document.createElement('canvas')
+        const context = canvas.getContext('2d')!
+        canvas.height = viewport.height
+        canvas.width = viewport.width
+
+        // Render page to canvas
+        await page.render({
+          canvasContext: context,
+          viewport: viewport
+        }).promise
+
+        // Convert canvas to base64 image
+        const imageUrl = canvas.toDataURL('image/png')
+        
+        console.log('Successfully converted PDF to image for OCR analysis')
+        
+        return {
+          content: '', // Empty content since we'll use image
+          imageUrl: imageUrl,
+          type: 'pdf' as SupportedFileType
+        }
+      } catch (conversionError) {
+        console.error('Failed to convert PDF to image:', conversionError)
+        throw new Error('PDF appears to contain no extractable text and could not be converted to image. This may be a scanned document or corrupted PDF. Please try uploading the document as an image (PNG/JPG) instead.')
+      }
     }
 
     return {
@@ -119,7 +183,19 @@ async function processPdf(file: File) {
     }
   } catch (error) {
     console.error('PDF processing error:', error)
-    throw error
+    
+    // Provide more helpful error messages
+    if (error instanceof Error) {
+      if (error.message.includes('Invalid PDF')) {
+        throw new Error('Invalid PDF file. Please ensure the file is not corrupted.')
+      } else if (error.message.includes('extractable text') || error.message.includes('converted to image')) {
+        throw error // Re-throw our custom message
+      } else {
+        throw new Error(`PDF processing failed: ${error.message}`)
+      }
+    } else {
+      throw new Error('PDF processing failed due to an unknown error')
+    }
   }
 }
 
