@@ -323,7 +323,7 @@ ISAF-V2 (Integrated Strategic Analysis Framework Version 2) is our proprietary A
 
 ---
 
-## 🎓 **Advanced Features**
+##  **Advanced Features**
 
 ### **Using Analysis Types**
 
@@ -350,7 +350,7 @@ You can build comprehensive insights by:
 
 ---
 
-## 🔒 **Privacy and Security**
+##  **Privacy and Security**
 
 ### **Data Handling**
 - **No Personal Data Storage**: The platform doesn't store personal information

@@ -214,7 +214,7 @@ The Financial Analyst - ISAF Platform is a comprehensive, enterprise-grade strat
 - **Financial Health Scoring**: Automated financial strength assessment with detailed explanations
 - **Growth Rate Calculations**: Revenue, profit, and operational growth analysis
 
-#### **🤖 AI-Powered Features**
+#### ** AI-Powered Features**
 
 **Natural Language Processing**
 - **Conversational Interface**: Ask complex business questions in natural language
@@ -285,7 +285,7 @@ The Financial Analyst - ISAF Platform is a comprehensive, enterprise-grade strat
 - **Microservices Architecture**: Modular design for easy scaling and maintenance
 - **API-First Design**: Everything accessible via well-documented APIs
 
-#### **👥 User Experience**
+#### ** User Experience**
 
 **Intuitive Interface**
 - **Modern UI/UX**: Clean, professional interface designed for business users

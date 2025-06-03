@@ -63,7 +63,7 @@ curl -X POST http://localhost:3000/api/chat \
 #### **Example Response**
 ```json
 {
-  "content": "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nINTEGRATED STRATEGIC ANALYSIS REPORT\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nEXECUTIVE SUMMARY\nTesla operates in Electric Vehicles, Automotive sectors with a complex strategic landscape...\n\nStrategic fit score: 78.5%\n\nKEY FINDINGS\n• Strategic Factor Analysis: The most significant strategic factors are...\n\nSTRATEGIC RECOMMENDATIONS\n1. Market Leadership Consolidation (85% confidence)\n   • Leverage first-mover advantage in premium EV segment...\n"
+  "content": "\nINTEGRATED STRATEGIC ANALYSIS REPORT\n\n\nEXECUTIVE SUMMARY\nTesla operates in Electric Vehicles, Automotive sectors with a complex strategic landscape...\n\nStrategic fit score: 78.5%\n\nKEY FINDINGS\n• Strategic Factor Analysis: The most significant strategic factors are...\n\nSTRATEGIC RECOMMENDATIONS\n1. Market Leadership Consolidation (85% confidence)\n   • Leverage first-mover advantage in premium EV segment...\n"
 }
 ```
 
@@ -177,7 +177,7 @@ Store financial statements or calculated ratios.
 
 ---
 
-## 🧮 **Financial Analysis Integration**
+##  **Financial Analysis Integration**
 
 ### **Using the Financial Analysis Engine**
 
@@ -234,7 +234,7 @@ The platform calculates 25+ financial ratios including:
 
 ---
 
-## 📄 **Document Processing**
+##  **Document Processing**
 
 ### **Supported Formats**
 

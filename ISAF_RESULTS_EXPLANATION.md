@@ -66,19 +66,19 @@ This number shows how many strategic factors the system identified in your input
 
 ### Three-Tier Confidence System
 
-#### **High-Confidence (★★★)** - 70-95%
+#### **High-Confidence ()** - 70-95%
 - Based on comprehensive data with clear patterns
 - All major frameworks well-represented
 - Recommendations can be implemented with confidence
 - Mathematical models have strong data foundation
 
-#### **Medium-Confidence (★★☆)** - 50-69%
+#### **Medium-Confidence ()** - 50-69%
 - Based on good data with some uncertainties
 - Most frameworks adequately represented
 - Recommendations are directionally correct but may need validation
 - Some data gaps that could affect precision
 
-#### **Indicative (★☆☆)** - Below 50%
+#### **Indicative ()** - Below 50%
 - Based on limited data, provides directional insights only
 - Significant data gaps in one or more frameworks
 - Recommendations should be treated as starting points for further analysis
@@ -162,7 +162,7 @@ Each recommendation includes a confidence percentage:
 
 ---
 
-## 🧮 **Mathematical Methodology**
+##  **Mathematical Methodology**
 
 ### Core Calculations Explained
 
@@ -200,14 +200,14 @@ Review framework completeness percentages to understand the reliability of your 
 Focus on factors with impact scores above 6.0 - these are your strategic priorities.
 
 ### Step 4: Implement Recommendations
-Start with high-confidence (★★★) recommendations that have high impact potential (7-10).
+Start with high-confidence () recommendations that have high impact potential (7-10).
 
 ### Step 5: Monitor and Adjust
 Track implementation progress and update your analysis as conditions change.
 
 ---
 
-## ❓ **Frequently Asked Questions**
+##  **Frequently Asked Questions**
 
 ### Q: Why is my Strategic Fit Score lower than expected?
 **A:** Low scores often indicate misalignment between your internal capabilities and external market conditions. Review the key findings to identify specific areas for improvement.

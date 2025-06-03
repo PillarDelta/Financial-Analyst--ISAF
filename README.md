@@ -18,7 +18,7 @@ A powerful strategic analysis platform featuring advanced mathematical modeling 
 ### **For Developers**
 - **[ API Documentation](API_DOCUMENTATION.md)** - Complete API reference
 - **[ Technical Documentation](DOCUMENTATION.md)** - System architecture and implementation
-- **[🛠 Installation Guide](INSTALLATION.md)** - Detailed setup instructions
+- **[ Installation Guide](INSTALLATION.md)** - Detailed setup instructions
 - **[ Testing Guide](src/tests/)** - Test suite and validation
 
 ### **For Project Management**
@@ -78,7 +78,7 @@ For more detailed installation instructions and troubleshooting, see [INSTALLATI
 3. **Get Analysis**: Receive comprehensive ISAF-V2 strategic analysis with recommendations
 4. **Explore Features**: Upload documents, try financial analysis, experiment with different queries
 
-**👉 New to the platform? Start with the [User Handbook](USER_HANDBOOK.md) for a complete guide.**
+** New to the platform? Start with the [User Handbook](USER_HANDBOOK.md) for a complete guide.**
 
 ---
 
@@ -216,7 +216,7 @@ Key elements from the paper that we've implemented:
 #### Output Formatting Enhancements
 - Redesigned report format with professional box-style headers and clear section dividers
 - Improved visual hierarchy with better spacing and typography
-- Added star rating system (★★★, ★★☆, ★☆☆) for recommendation confidence levels
+- Added star rating system (, , ) for recommendation confidence levels
 - Better organization of implementation details for clearer action plans
 - Enhanced context preservation to maintain important insights from the original analysis
 
@@ -233,9 +233,9 @@ These improvements combine to deliver strategic analysis that is not only mathem
 Here's a simplified example of how the improved formatting appears in the platform:
 
 ```
-┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-┃              STRATEGIC ANALYSIS REPORT            ┃
-┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+              STRATEGIC ANALYSIS REPORT            
+
 
 Executive Summary:
 - The analysis identified key strategic factors across environmental, competitive, and 
@@ -244,7 +244,7 @@ Executive Summary:
   impact strategic outcomes.
 - The integrated model projects a strategic fit score of 80.1% (high-confidence).
 
-───────────────────────────────────────────────────────
+
 
 Data Quality Assessment:
 - Analysis based on 19 extracted data points 
@@ -253,10 +253,10 @@ Data Quality Assessment:
   Five Forces (100%), 
   SWOT (100%).
 
-───────────────────────────────────────────────────────
+
 
 Strategic Recommendations:
-1. Strategic Market Positioning [★★★ 71%]
+1. Strategic Market Positioning [ 71%]
    • Leverage organizational strengths by expanding their application across markets and 
      product lines, creating initiatives that maximize your competitive advantage.
    
