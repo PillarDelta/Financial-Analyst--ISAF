@@ -116,7 +116,7 @@ The system also measures how factors from different frameworks interact:
 
 ---
 
-## 📋 **Strategic Recommendations**
+##  **Strategic Recommendations**
 
 ### Recommendation Confidence Ratings
 
@@ -188,7 +188,7 @@ Each recommendation includes a confidence percentage:
 
 ---
 
-## 📈 **Using Your Results**
+##  **Using Your Results**
 
 ### Step 1: Review Strategic Fit Score
 Start with your overall Strategic Fit Score to understand your strategic position.

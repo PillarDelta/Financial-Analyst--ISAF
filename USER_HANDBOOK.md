@@ -1,12 +1,12 @@
-# 📚 Strategic Analyst Platform - User Handbook
+#  Strategic Analyst Platform - User Handbook
 
-## 🎯 **Welcome to Your AI-Powered Strategic Analysis Platform**
+##  **Welcome to Your AI-Powered Strategic Analysis Platform**
 
 The Strategic Analyst Platform is your comprehensive business analysis companion, powered by advanced AI and the proprietary ISAF-V2 (Integrated Strategic Analysis Framework) engine. This handbook will guide you through everything you need to know to get the most out of the platform.
 
 ---
 
-## 🚀 **Quick Start Guide**
+##  **Quick Start Guide**
 
 ### **Getting Started in 3 Steps**
 
@@ -72,7 +72,7 @@ Upload or paste:
 
 ---
 
-## 🧠 **Understanding ISAF-V2 Analysis**
+##  **Understanding ISAF-V2 Analysis**
 
 ### **What is ISAF-V2?**
 
@@ -366,7 +366,7 @@ You can build comprehensive insights by:
 
 ---
 
-## 🆘 **Getting Help**
+##  **Getting Help**
 
 ### **Built-in Help**
 - **Example Questions**: The platform provides sample questions to get started
@@ -385,7 +385,7 @@ You can build comprehensive insights by:
 
 ---
 
-## 🔄 **Updates and New Features**
+##  **Updates and New Features**
 
 ### **Current Version: 1.0**
 - ISAF-V2 strategic analysis engine
@@ -417,7 +417,7 @@ You can build comprehensive insights by:
 
 ---
 
-## 🎯 **Success Tips**
+##  **Success Tips**
 
 ### **Maximizing Analysis Quality**
 1. **Provide Context**: The more relevant information you provide, the better the analysis

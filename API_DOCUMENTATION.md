@@ -1,6 +1,6 @@
 # 🔌 API Documentation
 
-## 📋 **Overview**
+##  **Overview**
 
 The Financial Analyst Strategic Analyst Platform provides RESTful APIs for integrating advanced strategic analysis capabilities into your applications. This documentation covers all available endpoints, authentication, request/response formats, and integration examples.
 
@@ -8,7 +8,7 @@ The Financial Analyst Strategic Analyst Platform provides RESTful APIs for integ
 
 ---
 
-## 🔐 **Authentication**
+##  **Authentication**
 
 ### **Current Version (1.0)**
 - **No authentication required** for basic analysis endpoints
@@ -22,7 +22,7 @@ The Financial Analyst Strategic Analyst Platform provides RESTful APIs for integ
 
 ---
 
-## 📊 **Core Analysis Endpoints**
+##  **Core Analysis Endpoints**
 
 ### **POST /api/chat**
 
@@ -620,7 +620,7 @@ class StrategicAnalystSDK {
 
 ---
 
-## 🔮 **Roadmap**
+##  **Roadmap**
 
 ### **Version 1.1 (Q2 2025)**
 - API key authentication
