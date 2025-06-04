@@ -1,4 +1,4 @@
-# Strategic Analyst Platform v1.0
+# Strategic Analyst Platform 2.0
 
 A powerful strategic analysis platform featuring advanced mathematical modeling and professional output formatting.
 
